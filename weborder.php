@@ -43,7 +43,12 @@ $order->message = "Thank you! Your order has been placed! You'll be receiving a 
 
 //taken from http://www.vijayjoshi.org/2011/01/12/php-shorten-urls-using-google-url-shortener-api/
 $link = "https://maps.google.com/?ll=".$_REQUEST['latitude'].",".$_REQUEST['longitude'];
-
+/*$request->longUrl = $link;
+$curl = curl_init();
+$result = curl_exec($curl);
+$result = json_decode($result);
+curl_close($curl);
+*/
 $postData = array('longUrl' => $link);
 $jsonData = json_encode($postData);
 

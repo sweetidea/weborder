@@ -36,6 +36,35 @@
 			*
 			*/
 
+			function initializeMap ( el, mapOptions ) {
+				var map;
+				if(mapOptions) {
+
+				} else {
+					mapOptions = {
+						zoom: 16,
+		          		mapTypeId: google.maps.MapTypeId.ROADMAP
+					};	
+				}
+				map = new google.maps.Map(el, mapOptions);
+				return map;
+			} 
+
+			function placeMarker ( map, latLng ) {
+    			var marker = new google.maps.Marker({
+				    	position: latLng,
+				    	title:"BRING COOKIES HERE"
+					});
+    			}
+				marker.setMap(map);
+    			return marker;
+    		}
+
+    		function moveMarker ( marker, latLng ) {
+    			marker.position = latLng;
+    			return marker;
+    		}
+
 	  		function initialize() {
 		        //center: new google.maps.LatLng(position.coords.latitude, position.coords.longitude),
 		        if(map)
