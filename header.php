@@ -50,6 +50,12 @@
 				return map;
 			} 
 
+			function drawOrders ( orders, map ) {
+				for( order in orders ) {
+					placeMarker(map, new google.maps.LatLng(order.latitude,order.longitude));
+				}
+			}
+
 			function placeMarker ( map, latLng ) {
     			var marker = new google.maps.Marker({
 				    	position: latLng,
@@ -363,23 +369,23 @@
 				</div> <!-- end #inner-header -->
 
 				<div id="intro" class="site-intro wrap clearfix">
-					<div class="site-description" style="height: 280px; margin-top: 30px; margin-bottom: 30px;">
-    <div id="info" class="sixcol widget_header" style="margin: 0px;">
+					<div class="site-description">
+    <div id="sweetIdeaInfo" class="sixcol widget_header">
     	<h4>LATE-NIGHT COOKIE DELIVERY</h4>
-    	<div class="information" style="display: inline-block;vertical-align: top;">
-    		<div class="days" style=" display: inline-block;">
+    	<div class="information">
+    		<div class="days">
     			<h5>THURSDAY</h5>
     			<h5>FRIDAY</h5>
     			<h5>SATURDAY</h5>
     		</div>
-    		<div class="hours" style="display: inline-block; margin-left: 10px;">
+    		<div class="hours">
 		    	<h5>10PM-3AM</h5>
 		    	<h5>10PM-3AM</h5>
 		    	<h5>10PM-3AM</h5>
 		    </div>
     	<h4>TEXT 424-241-2825</h4>
     	</div>
-    	<div id="maplink" style="display: inline-block;padding-left: 10px;width:120px;height:100px;">
+    	<div id="maplink">
     		<a href="http://getcooki.es/delivery-zones"><img src="http://maps.googleapis.com/maps/api/staticmap?center=42.372202,-71.118193&zoom=13&size=100x100&sensor=true"></a>
     	</div>
     </div>
