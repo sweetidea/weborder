@@ -61,7 +61,7 @@
 				    	position: latLng,
 				    	title:"BRING COOKIES HERE"
 					});
-    			}
+    			
 				marker.setMap(map);
     			return marker;
     		}
@@ -96,6 +96,34 @@
 		        drawDeliveryZones(bigMap);
 		        bigMap.setCenter(new google.maps.LatLng(42.372202,-71.118193));
 		    }
+
+		    function Map ( selector, options ) {
+		    	this.selector = selector;
+		    	this.$ = $(selector);
+		    	this.options = options || {zoom:13, mapTypeId: google.maps.MapTypeId.ROADMAP};
+		    	this.map = new google.maps.Map(this.$.get(0),this.options);
+		    	this.deliveryZones = { };
+		    }
+
+		    Map.prototype.showMap( ) {
+		    	this.$.show();
+		    }
+		    
+		    Map.prototype.hideMap( ) {
+		    	this.$.hide();
+		    }
+
+		    Map.prototype.containsLocation( latLng ) {
+		    	for ( var zone in this.deliveryZones ) {
+		    		if (google.maps.geometry.poly.containsLocation(latLng,zone) )
+		    			return true;
+		    	}
+		    	return false;
+		    }
+
+		    //map should be refactored into an object that contains an instance of the map itself, a reference to the ID it will be contained in, a jquery object shortcut, and 
+		    //the polygons that make up the delivery zones. Should have methods to show/hide the map, show/hide the map overlay, 
+
 
 		    $(document).ready(displayBigMap);
 		    $(document).ready(function ( ) {
@@ -306,7 +334,7 @@
 
 		    function getLatLng ( lat, lng ) { 
 		    	if( lat && lng ) {
-		    		return google.maps.LatLng(lat,lng);
+		    		return new google.maps.LatLng(lat,lng);
 		    	}
 		    	return new google.maps.LatLng($("#latitude").val(),$("#longitude").val());
 		    }
@@ -390,13 +418,13 @@
     	</div>
     </div>
     <div id="infobox" class="sixcol widget_header" style="margin-left: 10px;">
-    	<div id="map_overlay" class="sixcol" style="display: none; position: absolute; top: 0; left: 0; width:100%; height:100%; background-color: black; opacity: 1; z-index: 10000;border-radius: 5px;margin: 0;"></div>
-    	<div id="infobox_overlay" class="widget_header_overlay" style="padding: 5px;position: absolute; top: 20%; right: 2%;  z-index: 10001; border-top-left-radius: 5px; border-top-right-radius: 5px; border-bottom-right-radius: 5px; border-bottom-left-radius: 5px; margin: 0px; display: none;background-color: rgba(29,99,139,.8);">
+    	<div id="map_overlay" class="overlay"></div>
+    	<div id="mapToolbar" class="overlay">
     		<h3 style="line-height: 0;">Is this right?</h3>
     		<input onclick="acceptLocation();" type="button" class="greenButton" value="YUP!"><BR>
     		<input onclick="rejectLocation();" type="button" class="greenButton" value="NOPE!">
     	</div>
-    	<div id="ajax_overlay" class="sixcol widget_header" style="display: none; position: absolute; top: 0; left: 0; width:100%; height:100%; opacity: 1; z-index: 10002; margin: 0;">
+    	<div id="ajax_overlay" class="overlay">
     		<p></p>
     		<input class="greenButton" onclick="hideAjaxOverlay();" type="button" value="TRY AGAIN">
     	</div>
