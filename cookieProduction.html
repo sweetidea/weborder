@@ -1,0 +1,49 @@
+<html>
+<head>
+    <link href='http://fonts.googleapis.com/css?family=Lilita+One' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.0/themes/base/jquery-ui.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<link rel="stylesheet" href="./cartStyle.css" />
+<script src="./TileGrid.js"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+  <script src="https://checkout.stripe.com/v2/checkout.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.0/jquery-ui.min.js"></script>
+  		<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDbWc_3x-gGY0LnXMBpRukGoVNsJrLMbW0&sensor=true"></script>
+  		<script type="text/javascript">
+
+
+TileGrid.prototype.saveOrder = function ( ) {
+    $.ajax({
+        type: "GET",
+        url: "http://getcooki.es/weborder/cookieProduction.php",
+        data: { 
+            productManifest: this.getProductManifest()
+        },
+        success: function ( response ) { $("#result").text(response) },
+        error: function ( ) { alert("Order not placed") }
+    });
+}
+
+
+function initialize ( ) {
+    var tiles = [];
+    tiles.push(new Tile("snickerdoodle","Snickerdoodle",""));
+    tiles.push(new Tile("choc_chip","Chocolate Chip",""));
+    tiles.push(new Tile("tazadoodle","Tazadoodle",""));
+    tiles.push(new Tile("double_choc","Double Chocolate (V)",""));
+    tiles.push(new Tile("white_choc","White Chocolate Oatmeal",""));
+    tiles.push(new Tile("pumpkin","Pumpkin",""));
+    grid = new TileGrid("#grid","Cookie Production",tiles);
+    grid.draw();
+}
+
+$(document).ready(initialize);
+  		</script>
+</head>
+<body>
+
+<div id="grid" class="cart"></div>
+<div id="result"></div> 
+</body>
+
+</html>
