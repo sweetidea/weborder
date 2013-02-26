@@ -1,0 +1,123 @@
+body {
+    margin: 0px;
+    border: 0px;
+    padding: 0px;
+}
+
+.container {
+    width: 98%;
+    padding: 1%;
+    border-radius: 10px;
+    background-color: #004e72;
+    font-family: "Lilita One", cursive, serif;
+    text-rendering: optimizelegibility;
+    font-weight: 500;
+    color: white;
+}
+
+.container input {
+    width: 100%;
+}
+
+.container > div {
+    margin-bottom: 5px;
+}
+
+.container > div:last-child {
+    margin: 0px;
+}
+
+.container h1 {
+    line-height: 0.5em;
+    font-size: 2em;
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+}
+
+.container .total {
+    font-size: 1.4em;
+    text-align: center;
+}
+
+.container .controls input { 
+    background: #569556;
+    border-radius: 10px;
+    color: white;
+    font-size: 1.4em;
+    border-width: 4px 4px 0px 0px;
+    border-top-color: #7bac7b;
+    border-right-color: #7bac7b;
+    border-style: solid;
+    width: 100%;
+    margin: 0 auto;
+}
+
+
+#map {
+    width: 100%;
+    height: 200px;
+}
+
+.tileRow {
+    text-align: center;
+    margin-bottom: 5px;
+}
+
+.tile {
+    width: 42%;
+    padding: 2%;
+    padding-right: 0px;
+    display: inline-block;
+    background-color: #569556;
+    border-radius: 10px;
+    color: white;
+    font-size: 1.4em;
+    border-width: 4px 4px 0px 0px;
+    border-top-color: #7bac7b;
+    border-right-color: #7bac7b;
+    border-style: solid;
+    margin-right: 5px;
+    vertical-align: top;
+}
+
+.tile:active {  
+}
+
+.tile:last-child {
+    margin-right: 0px;
+}
+
+.tile input {
+    width: 100%;
+}
+
+.tile input {
+    margin: 0px;
+}
+
+.tile .content {
+    height: 100px;
+    cursor: hand;
+}
+
+.tile .title {
+    text-align: left;
+    padding-bottom: 35px;
+    font-size: 0.9em;
+}
+
+.tile .description {
+    text-align: right;
+    font-size: 2em;
+}
+
+.selected {
+    background-color: #1E331E;
+}
+
+
+.tileLayout {
+    background-color: #1d638b;
+    border-radius: 10px;
+    padding: 10px;
+}
