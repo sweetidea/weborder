@@ -5,7 +5,8 @@ body {
 }
 
 .container {
-    width: 98%;
+    width: 47%;
+    height: 400px;
     padding: 1%;
     border-radius: 10px;
     background-color: #004e72;
@@ -39,23 +40,27 @@ body {
     text-align: center;
 }
 
-.container .controls input { 
+.container .controls input {
+    margin: 0 auto;
+    width: 100%;
+
+}
+
+.container .controls input[type='button'] { 
     background: #569556;
-    border-radius: 10px;
     color: white;
+    border-radius: 10px;
     font-size: 1.4em;
     border-width: 4px 4px 0px 0px;
     border-top-color: #7bac7b;
     border-right-color: #7bac7b;
     border-style: solid;
-    width: 100%;
-    margin: 0 auto;
 }
 
 
 #map {
     width: 100%;
-    height: 200px;
+    height: 300px;
 }
 
 .tileRow {
@@ -120,4 +125,70 @@ body {
     background-color: #1d638b;
     border-radius: 10px;
     padding: 10px;
+}
+
+.controls input[type='button'] {
+    cursor: hand;
+}
+
+.history {
+    overflow-y: scroll;
+    height: 75%;
+    width: 100%;
+    /*background: #22414F;*/
+    background-color: #78ADC4;
+}
+
+.history .text  {
+    color: white;
+    padding: 3px;
+    max-width: 48%;
+    background-color: #1d638b;
+    background-color: ;
+    margin-left: 5px;
+    font-size: 0.8em;
+    margin-bottom: 5px;
+    border-radius: 10px;
+}
+
+.history .text:last-child {
+    margin-bottom: 0px;
+}
+
+.text .message {
+    font-size: 1.5em;
+    margin-bottom: 5px;
+}
+
+.history .from {
+    color: black;
+    margin-left: 50%;
+    background-color: #569556;
+
+}
+
+.text .number {
+    display: inline-block;
+}
+
+.text .timestamp {
+    margin-left: 5px;
+    display: inline-block;
+}
+
+
+.texterOverlay {
+    display: none;
+    position: relative;
+    top: -70%;
+    margin: auto;
+    z-index: 10000;
+    width: 300px;
+    padding: 5px;
+    background: black;
+    border: 3px solid yellow;
+}
+
+.texterOverlay #message {
+    text-align: center;
 }

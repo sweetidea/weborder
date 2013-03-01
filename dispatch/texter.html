@@ -2,32 +2,31 @@
 <head>
     <link href='http://fonts.googleapis.com/css?family=Lilita+One' rel='stylesheet' type='text/css'>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-<script src="../Map.js"></script>
 <link rel="stylesheet" href="./dispatchStyle.css"  type='text/css'/>
-<script src="./dispatcher.js"></script>
+<script src="./Texter.js"></script>
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
   <script src="https://checkout.stripe.com/v2/checkout.js"></script>
   		<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDbWc_3x-gGY0LnXMBpRukGoVNsJrLMbW0&sensor=true"></script>
   		<script type="text/javascript">
 
 function initialize ( ) {
-  var dispatcher = new Dispatcher();
+  var texter = new Texter("#texter","+19784304622");
+  var texter2 = new Texter("#texter2","+15206616688");
+  var texter3 = new Texter("#texter3","+19786215936");
+
 }
 
 $(document).ready(initialize);
   		</script>
 </head>
 <body>
-<div id="dispatcher" class="container" style="height: 96%; width: 96%;">
-  <h1>Dispatcher</h1>
-  <input type="text" id="phone" placeholder="Phone #" tabindex="1"></input>
-  <input type="text" id="address" placeholder="Address" tabindex="2"></input>
-  <div id="map"></div>
-  <input type="text" id="shortlink" placeholder="Short link"></input>
-  <input type="text" id="comments" placeholder="Comments" tabindex="3"></input>
-  <h1>Select Campus</h1>
-  <div id="campusGrid"></div>
-  <div class='controls'><input type='button' value='SUBMIT'></input></div>
+<div id="texter" class="container">
+</div>
+<div id="texter2" class="container">
+</div>
+<div id="texter3" class="container">
+</div>
+<div id="texter4" class="container">
 </div>
 </body>
 

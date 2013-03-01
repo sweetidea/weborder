@@ -1,5 +1,7 @@
 var DispatchTile = function ( id, name, description, image ) {
-    this.id = id;
+    this.idPrefix = 'zone';
+    this.id = this.idPrefix+''+id;
+    this.campusId = id;
     this.name = name;
     this.description = description;
     this.image = image;
@@ -81,28 +83,24 @@ DispatchTileGrid.prototype.getCampus = function ( ) {
     for(var tile in this.tiles) {
         tile = this.tiles[tile];
         if(tile.selected)
-            return tile.id;
+            return tile.campusId;
     }
 }
 
 var Dispatcher = function ( ) {
     this.map = new Map("map");
-    
-    var tiles = [];
-    tiles.push(new DispatchTile("Tufts","Tufts","Julia"));
-    tiles.push(new DispatchTile("NU","Northeastern","Gino"));
-    tiles.push(new DispatchTile("BU","BU","DJ"));
-    tiles.push(new DispatchTile("MIT","Harvard/MIT","John"));
-    
-    this.campusGrid = new DispatchTileGrid("#campusGrid","",tiles);
+
+    this.initialize(); 
 
     $("#address").on("blur",$.proxy(function(){this.geocodeAddress($("#address").val())},this));
     $("#map").on("click",function(){$("#address").blur();});
+    $(".controls input[type='button']").on("click",$.proxy(function(){this.dispatchOrder()},this));
 }
 
 Dispatcher.prototype.draw = function ( ) {
     this.map.draw();
     this.campusGrid.draw();
+
 }
 
 Dispatcher.prototype.geocodeAddress = function ( address ) {
@@ -142,9 +140,29 @@ Dispatcher.prototype.dispatchOrder = function ( ) {
             campus: this.campusGrid.getCampus(),
             address: $("#address").val(),
             phone: $("#phone").val(),
-            shortlink: $("#shortlink").val()
+            shortlink: $("#shortlink").val(),
+            comments: $("#comments").val()
         },
         success: function ( response ) { $("#result").text(response) },
+        error: function ( ) { alert("Order not placed") }
+    });
+}
+
+Dispatcher.prototype.initialize = function ( ) {
+    var that = this;
+    var _initializeTiles = function ( result ) {
+        that.tiles = [];
+        for( var zone in result ) {
+            var zone = result[zone]; //eventually use zone.runnerID as well as other attr
+            that.tiles.push(new DispatchTile(zone.zoneId,zone.zoneName,zone.shortName));
+        }
+    };
+    
+
+    $.ajax({
+        type: "GET",
+        url: "http://getcooki.es/weborder/getZoneAssignments.php",
+        success: function ( response ) { _initializeTiles(response); that.campusGrid = new DispatchTileGrid("#campusGrid","",that.tiles); that.draw();},
         error: function ( ) { alert("Order not placed") }
     });
 }
