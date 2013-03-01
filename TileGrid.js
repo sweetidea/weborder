@@ -41,7 +41,6 @@ Tile.prototype.getQty = function ( ) {
 function TileGrid ( selector, headerText, tiles ) { 
     this.$ = $(selector);
     this.cols = 2;
-    this.tiles = [];
     this.headerText = headerText;
     if (tiles)
         this.tiles = tiles;
