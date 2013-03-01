@@ -1,0 +1,36 @@
+<html>
+<head>
+    <link href='http://fonts.googleapis.com/css?family=Lilita+One' rel='stylesheet' type='text/css'>
+    <link href='./Map.css' rel='stylesheet' type='text/css'>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<script src="./Map.js"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+  <script src="https://checkout.stripe.com/v2/checkout.js"></script>
+  		<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDbWc_3x-gGY0LnXMBpRukGoVNsJrLMbW0&sensor=true"></script>
+  		<script type="text/javascript">
+
+function initialize ( ) {
+    var map = new Map("map");
+    map.draw();
+    map.placeMarker(new google.maps.LatLng(42.405856,-71.131442),"bassssss");
+
+    map.placeMarker(new google.maps.LatLng(42.405856,-71.131132),"kablooo");
+
+    /*var map2 = new Map("map2");
+    map2.placeMarker(new google.maps.LatLng(42.405856,-71.131132),"kablooo");
+    var map3 = new Map("map3");
+    var map4 = new Map("map4");*/
+}
+
+$(document).ready(initialize);
+  		</script>
+</head>
+<body>
+
+<div id="map" class="map"></div>
+<div id="map2" class="map"></div>
+<div id="map3" class="map"></div>
+<div id="map4" class="map"></div>
+</body>
+
+</html>
