@@ -3,7 +3,7 @@
     <link href='http://fonts.googleapis.com/css?family=Lilita+One' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.0/themes/base/jquery-ui.css" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-<link rel="stylesheet" href="./cartStyle.css" />
+<link rel="stylesheet" href="../cartStyle.css" />
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
   <script src="https://checkout.stripe.com/v2/checkout.js"></script>
   <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.0/jquery-ui.min.js"></script>
@@ -119,7 +119,7 @@ ShoppingCart.prototype.getProductManifest = function ( ) {
 ShoppingCart.prototype.saveOrder = function ( ) {
     $.ajax({
         type: "GET",
-        url: "http://getcooki.es/weborder/doughProduction.php",
+        url: "http://getcooki.es/weborder/kitchen/doughProduction.php",
         data: { 
             productManifest: this.getProductManifest()
         },

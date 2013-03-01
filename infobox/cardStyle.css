@@ -1,0 +1,68 @@
+body {
+    background: black;
+}
+
+
+.cardView {
+    width: 98%;
+    height: 98%;
+    /*background: #004e72;*/
+    background: black;
+    border-radius: 10px;
+    margin: 0px;
+    padding: 10px;
+    font-family: "Lilita One", cursive, serif;
+    text-rendering: optimizelegibility;
+    font-weight: 500;
+    color: white;
+}
+
+.cardView:hover .controls {
+    display: block;
+}
+
+.card { 
+    width: 94%;
+    height: 100%;
+    padding-left: 5%;
+    padding-right: 1%;
+    background: black;
+}
+
+.card .title {
+    font-size: 4em;
+}
+
+.card .description {
+    font-size: 2em;
+    padding-left: 1%;
+}
+
+.thumbnail {
+    display: inline-block;
+    margin-right: 10px;
+}
+
+.controls {
+    display: none;
+    position: absolute;
+    width: 98%;
+    height: 98%;
+    opacity: 0.5;
+    top: 10px;
+    left: 10px;
+    z-index: 1000;
+    font-size: 3em;
+}
+
+.leftclick {
+    margin-top: 25%;
+    margin-left: 2%;
+    float: left;
+}
+
+.rightclick {
+    margin-top: 25%;
+    margin-right: 2%;
+    float: right;
+}

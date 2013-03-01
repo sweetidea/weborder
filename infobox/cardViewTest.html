@@ -1,0 +1,50 @@
+<html>
+<head>
+    <link href='http://fonts.googleapis.com/css?family=Lilita+One' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.0/themes/base/jquery-ui.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<link rel="stylesheet" href="./cardStyle.css" />
+<script src="./CardView.js"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+  <script src="https://checkout.stripe.com/v2/checkout.js"></script>
+  		<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDbWc_3x-gGY0LnXMBpRukGoVNsJrLMbW0&sensor=true"></script>
+  		<script type="text/javascript">
+
+
+
+
+
+function initialize ( ) {
+    //init cards
+    var cards = [];
+    var titlecard = "<div>John Piermarini</div><div>Sweet Idea</div><div>http://getcooki.es</div>";
+    var thisisMVPcard = "<div>Well, sort of. This dinky slideshow app is version 1 of something really cool.<ul><li>Learn from your mistakes</li><li>Iterate, forever and ever and ever</li><li>Always ask, \"How can I make this better?\"</li></ul></div>";
+    var whatismvp = "<div><ul><li>\"A tent-pole feature\" - Eric Ries</li><li>Something to build around</li><li>Work your core</li><li>Small and hopefully forgiving initial user base</li><li>\"Just keep swimming\" - <img src='./dory.gif'></img></li></ul></div>"
+    var basicprocess = "<div><ol><li>DEPLOY</li><li>COLLECT DATA/FEEDBACK</li><li>LEARN (A LOT, CONSTANTLY)</li><li>IMPROVE</li><li>GOTO 1</li></ol></div>";
+    var sweetideause = "<div><ul><li>WE ITERATE CONSTANTLY</li><li>Weekly cycle</li><li>Fast deployment, fast death</li></ul>EXAMPLES<ul><li>Cookiegram</li><li>Web Ordering</li><li>Dispatching system</li><li>Tracking tools</li><li>Cookie API</li></ul></div>";
+    var sources = "<div><ul><li>Eric Ries http://www.startuplessonslearned.com/2009/03/minimum-viable-product.html</li><li>Wikipedia http://en.wikipedia.org/wiki/Minimum_viable_product (yes I just listed Wikipedia as a source, DEAL WITH IT)</li></ul></div>";
+    cards.push(new Card("card2","","MINIMUM VIABLE PRODUCT",titlecard));
+    cards.push(new Card("xxxxx","","MINIMUM VIABLE PRODUCT",whatismvp));
+    cards.push(new Card("card1","","MINIMUM VIABLE PRODUCT",basicprocess));
+    cards.push(new Card("sweetidea","","How does Sweet Idea apply this methodology?",sweetideause));
+    cards.push(new Card("xxx","","You're looking at a MVP... RIGHT NOW",thisisMVPcard));
+    cards.push(new Card("xxxx","","REFERENCES",sources));
+
+
+    //you are looking at a MVP right now, sort of
+
+    
+    var cardView = new CardView("#infobox",cards);
+    cardView.draw();
+}
+
+$(document).ready(initialize);
+  		</script>
+</head>
+<body>
+
+<div id="infobox"></div>
+
+</body>
+
+</html>

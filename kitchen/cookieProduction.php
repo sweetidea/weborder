@@ -1,12 +1,9 @@
 <?php
-include_once('include/config.php');
-include_once('include/init.php');
+include_once('../include/config.php');
+include_once('../include/init.php');
 
 $manifest = $_REQUEST['productManifest'];
-$campus = $_REQUEST['campus'];
 $response = array();
-
-array_push($response,"Campus ID: ".$campus);
 
 foreach ( $manifest as $itemName => $qty ) {
 	$productId = 0;
@@ -20,9 +17,9 @@ foreach ( $manifest as $itemName => $qty ) {
 		default: break;
 	}
 	if ($qty>0 && $productId>0){
-		$sql = "INSERT INTO bag_leftover_list VALUES ('',?,CURRENT_TIMESTAMP,?,?)";
+		$sql = "INSERT INTO kitchen_cookie_production VALUES ('',?,CURRENT_TIMESTAMP,?)";
 		$statement = $db->prepare($sql);
-		$result = $statement->execute(array($campus,$productId,$qty));
+		$result = $statement->execute(array($productId,$qty));
 		if($result)
 			array_push($response,"Successfully added ".$itemName." with qty ".$qty);
 		else

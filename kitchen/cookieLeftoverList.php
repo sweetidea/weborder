@@ -1,6 +1,6 @@
 <?php
-include_once('include/config.php');
-include_once('include/init.php');
+include_once('../include/config.php');
+include_once('../include/init.php');
 
 $manifest = $_REQUEST['productManifest'];
 $campus = $_REQUEST['campus'];
@@ -20,7 +20,7 @@ foreach ( $manifest as $itemName => $qty ) {
 		default: break;
 	}
 	if ($qty>0 && $productId>0){
-		$sql = "INSERT INTO bag_pack_list VALUES ('',?,CURRENT_TIMESTAMP,?,?)";
+		$sql = "INSERT INTO bag_leftover_list VALUES ('',?,CURRENT_TIMESTAMP,?,?)";
 		$statement = $db->prepare($sql);
 		$result = $statement->execute(array($campus,$productId,$qty));
 		if($result)
