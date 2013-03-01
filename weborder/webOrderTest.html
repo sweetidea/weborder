@@ -1,0 +1,242 @@
+<html>
+<head>
+    <link href='http://fonts.googleapis.com/css?family=Lilita+One' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.0/themes/base/jquery-ui.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<link rel="stylesheet" href="./cartStyle.css" />
+<script src="./TileGrid.js"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+  <script src="https://checkout.stripe.com/v2/checkout.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.0/jquery-ui.min.js"></script>
+  		<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDbWc_3x-gGY0LnXMBpRukGoVNsJrLMbW0&sensor=true"></script>
+  		<script type="text/javascript">
+        var map;
+        var bigMap;
+        var marker;
+        /*BUGS
+      *
+        If you change the address text after verification, it will still submit without re-confirming.
+      *
+      */
+      function initializeMap ( el, mapOptions ) {
+        var map;
+        if(mapOptions) {
+        } else {
+          mapOptions = {
+            zoom: 16,
+                  mapTypeId: google.maps.MapTypeId.ROADMAP
+          };  
+        }
+        map = new google.maps.Map(el, mapOptions);
+        return map;
+      } 
+        function submitGetCookiesForm ( ) { 
+          $.ajax({
+            type: "GET",
+            url: "http://getcooki.es/weborder/weborder.php",
+            data: { 
+              address: $("#address").val(),
+              phone: $("#phone").val(),
+              latitude: $("#latitude").val(),
+              longitude: $("#longitude").val()
+            },
+            success: ajaxResponseHandler,
+            error: ajaxErrorHandler
+          });
+        }
+        function ajaxResponseHandler( response ) {
+          if(response.sent) {
+            $("#ajax_overlay").css('background-color','green');
+            $("#ajax_overlay input[type=button]").val("CLOSE");
+            resetForm();
+          } else {
+            $("#ajax_overlay").css('background-color','red');
+            $("#ajax_overlay input[type=button]").val("TRY AGAIN");
+          }
+          var date = new Date(response.time*1000);
+          $("#ajax_overlay p").text(response.message+' '+date);
+          $("#ajax_overlay").show();
+          
+        }
+        function ajaxErrorHandler ( response ) {
+          $("#ajax_overlay").css('background-color','red');
+          $("#ajax_overlay input[type=button]").val("TRY AGAIN");
+          $("#ajax_overlay p").text("Sorry, there was an error! Please text us at 424-241-2825 to order!");
+          $("#ajax_overlay").show();
+        }
+        function hideAjaxOverlay() {
+          $("#ajax_overlay").hide();
+        }
+        function resetForm (  ) {
+          $("#address").css("background-color","white");
+          $("#address").val("");
+          $("#phone").css("background-color","white");
+          $("#phone").val("");
+          resetGetCookiesButton();
+        }
+        function resetGetCookiesButton (  ) {
+          $("#getCookiesButton").on("click.locate",locate);
+          $("#getCookiesButton").off("click.submitForm");
+          $("#getCookiesButton").val("CONFIRM");
+          $("#address").css("background-color","white");
+          $("#address").off("change.address");
+          $("#address").off("keypress.address");
+        }
+        //$(document).ready(initialize);
+        function locate ( ) {
+          var address = $('#address').val();
+          $("#infobox_overlay").show();
+          $("#map_overlay").show();
+          initialize();
+          if (address) {
+            geocodeAddress(address);
+          } else {
+            getLatLngGPS();
+          }
+          $("#address").on("change.address",resetGetCookiesButton);
+          $("#address").on("keypress.address",resetGetCookiesButton);
+        }
+        
+        function centerMap ( latLng ) {
+          if(marker) {
+            marker.position = latLng;
+          }
+          else {
+            marker = new google.maps.Marker({
+              position: latLng,
+              title:"BRING COOKIES HERE"
+          });
+          }
+        // To add the marker to the map, call setMap();
+        marker.setMap(map);
+          map.setCenter(latLng);        
+        }
+        function hideMap ( ) {
+          $("#infobox_overlay").hide();
+          $("#map_overlay").hide();
+        }
+        function geocodeAddress( address ) {
+          var geocoderRequest = {
+            address: address
+          };
+          var geocoder = new google.maps.Geocoder();
+          //setLatLng(result.geometry.location.latitude,result.geometry.location.longitude)
+          geocoder.geocode(geocoderRequest, function(result) {
+            setLatLng(result[0].geometry.location.lat(),result[0].geometry.location.lng());
+            centerMap(getLatLng());
+          });
+        }
+        function acceptLocation() {
+          hideMap();
+          $("#address").css("background-color","green");
+          $("#getCookiesButton").val("GET COOKIES!");
+          $("#addressVerified").val("true");
+          $("#getCookiesButton").off("click.locate");
+          $("#getCookiesButton").on("click.submitForm",submitGetCookiesForm);
+          $("#address").on("change.address",resetGetCookiesButton);
+          $("#address").on("keypress.address",resetGetCookiesButton);
+        }
+        function rejectLocation() {
+          $("#address").focus();
+          hideMap();
+          resetGetCookiesButton();
+        }
+        function getLatLngGPS ( ) {
+          if (navigator.geolocation) 
+          {
+              navigator.geolocation.getCurrentPosition( focusLatLng );
+          }
+        }
+        function focusLatLng( position ) {
+          setLatLng( position.coords.latitude, position.coords.longitude );
+          centerMap(getLatLng());
+          var geocoderRequest = {
+            location: getLatLng()
+          };
+          var geocoder = new google.maps.Geocoder();
+          //setLatLng(result.geometry.location.latitude,result.geometry.location.longitude)
+          geocoder.geocode(geocoderRequest, function(result) {
+            $("#address").val(result[0].formatted_address);
+          });
+        }
+        function setLatLng ( latitude, longitude ) {
+          document.getElementById("latitude").value = latitude;
+          document.getElementById("longitude").value = longitude;
+        }
+        function getLatLng ( lat, lng ) { 
+          if( lat && lng ) {
+            return google.maps.LatLng(lat,lng);
+          }
+          return new google.maps.LatLng($("#latitude").val(),$("#longitude").val());
+        }
+        function initializeOrderBox ( ) {
+          checkIfOpen();
+          intervalID = setInterval(checkIfOpen,60000);
+        }
+        function checkIfOpen ( ) {
+          $.ajax({
+            type: "GET",
+            url: "http://getcooki.es/weborder/areweopen.php",
+            success: checkIfOpenHandler
+          });
+        }
+        function checkIfOpenHandler ( response ) {
+      response.currentlyOpen = false;
+          if(response.currentlyOpen) {
+            $("#status_indicator").css("background-color","green");
+            $("#status_indicator").text("DELIVERY OPEN");
+            $("#getCookiesButton").on("click.locate",locate);
+            $("#getCookiesButton").val("CONFIRM");    
+            $("#address").removeAttr("disabled");
+            $("#phone").removeAttr("disabled");
+          } else {
+            $("#status_indicator").css("background-color","red");
+            $("#status_indicator").text("DELIVERY CLOSED");
+            $("#getCookiesButton").off("click.locate");
+            $("#getCookiesButton").val("CLOSED");
+            $("#address").attr("disabled","disabled");
+            $("#phone").attr("disabled","disabled");
+          }
+        }
+      
+
+
+function initialize ( ) {
+
+}
+$(document).ready(initializeOrderBox);
+$(document).ready(initialize);
+  		</script>
+</head>
+<body>
+
+<div id="infobox" class="fourcol widget_header">
+<div id="map_overlay" class="sixcol" style="display: none; position: absolute; top: 0; left: 0; width:100%; height:100%; background-color: black; opacity: 1; z-index: 10000;border-radius: 5px;margin: 0;"></div>
+<div id="infobox_overlay" class="widget_header_overlay" style="padding: 5px;position: absolute; top: 20%; right: 2%;  z-index: 10001; border-top-left-radius: 5px; border-top-right-radius: 5px; border-bottom-right-radius: 5px; border-bottom-left-radius: 5px; margin: 0px; display: none;background-color: rgba(29,99,139,.8);">
+<h3 style="line-height: 0;">Is this right?</h3>
+<input onclick="acceptLocation();" type="button" class="greenButton" value="YUP!"><BR>
+<input onclick="rejectLocation();" type="button" class="greenButton" value="NOPE!">
+</div>
+<div id="ajax_overlay" class="sixcol widget_header" style="display: none; position: absolute; top: 0; left: 0; width:100%; height:100%; opacity: 1; z-index: 10002; margin: 0;">
+<p></p>
+<input class="greenButton" onclick="hideAjaxOverlay();" type="button" value="TRY AGAIN">
+</div>
+<div id="getcookies" class="sixcol" style="margin-left: 0px;width: 100%;">
+<h4 style="display: inline-block;">GET COOKIES</h4>
+<div id="status_indicator">DELIVERY CLOSED</div>
+<form id="weborder" method="POST" action="http://getcooki.es/weborder/weborder.php">
+<input type="text" placeholder="Street address and school/city" id="address" name="address"><!--<input id="locateButton" onclick="locate();" class="greenButton" style="width: 29%; margin-left: 4px;" type="button" value="CONFIRM"></input>-->
+<input type="hidden" id="latitude" name="latitude">
+<input type="hidden" id="longitude" name="longitude">
+<input type="hidden" id="addressVerified" name="addressVerified">
+<div style="width: 100%;text-align: center;">
+<input type="text" placeholder="Your phone #" id="phone" name="phone"><input class="greenButton" id="getCookiesButton" type="button" value="CONFIRM">
+
+
+</div></form>
+</div>
+    
+</div>
+</body>
+
+</html>

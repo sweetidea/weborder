@@ -1,0 +1,149 @@
+.cart {
+    width: 300px;
+    background: #004e72;
+    border-radius: 10px;
+    padding: 10px;
+    font-family: "Lilita One", cursive, serif;
+    text-rendering: optimizelegibility;
+    font-weight: 500;
+    color: white;
+}
+
+.cart > div {
+    margin-bottom: 5px;
+}
+
+.cart > div:last-child {
+    margin: 0px;
+}
+
+.cart h1 {
+    line-height: 0.5em;
+    font-size: 2em;
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+}
+
+.tileRow {
+    text-align: center;
+    margin-bottom: 5px;
+}
+
+.tile {
+    width: 42%;
+    padding: 2%;
+    padding-right: 0px;
+    display: inline-block;
+    background-color: #569556;
+    border-radius: 10px;
+    color: white;
+    font-size: 1.4em;
+    border-width: 4px 4px 0px 0px;
+    border-top-color: #7bac7b;
+    border-right-color: #7bac7b;
+    border-style: solid;
+    margin-right: 5px;
+    vertical-align: top;
+}
+
+.tile:active {
+
+}
+
+.tile:last-child {
+    margin-right: 0px;
+}
+
+.tile input {
+    width: 100%;
+}
+
+.tile input {
+    margin: 0px;
+}
+
+.tile .content {
+    height: 100px;
+    cursor: hand;
+    background: #569556 url("http://getcooki.es/assets/2012/05/chocolate-chip.png") no-repeat;
+}
+
+.tile .title {
+    text-align: left;
+    padding-bottom: 35px;
+    font-size: 0.9em;
+}
+
+.tile .description {
+    text-align: right;
+    font-size: 0.75em;
+}
+
+.cart .total {
+	font-size: 1.4em;
+    text-align: center;
+}
+
+.cart .controls input { 
+    background: #569556;
+    border-radius: 10px;
+    color: white;
+    font-size: 1.4em;
+    border-width: 4px 4px 0px 0px;
+    border-top-color: #7bac7b;
+    border-right-color: #7bac7b;
+    border-style: solid;
+    width: 100%;
+    margin: 0 auto;
+}
+
+.tileLayout {
+    background-color: #1d638b;
+    border-radius: 10px;
+    padding: 10px;
+}
+
+.recipientInfo {
+    background-color: #1d638b;
+    border-radius: 10px;
+    padding: 10px;
+}
+
+#contactInfo {
+    background-color: #1d638b;
+    border-radius: 10px;
+    padding: 10px;
+}
+
+#contactInfo input {
+    width: 99%;
+}
+
+.recipientInfo input {
+    width: 99%;
+}
+
+#contactInfo .name {
+    display: inline-block;
+    width: 49%;
+}
+
+.recipientInfo .name {
+    display: inline-block;
+    width: 49%;
+}
+
+.recipientInfo #city {
+    display: inline-block;
+    width: 58%;
+}
+
+.recipientInfo #state {
+    display: inline-block;
+    width: 10%;
+}
+
+.recipientInfo #zipcode {
+    display: inline-block;
+    width: 29%;
+}
