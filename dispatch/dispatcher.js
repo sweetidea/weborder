@@ -87,10 +87,19 @@ DispatchTileGrid.prototype.getCampus = function ( ) {
     }
 }
 
+DispatchTileGrid.prototype.unselectAll = function ( ) {
+    for(var tile in this.tiles) {
+        tile = this.tiles[tile];
+        tile.unselect();
+    }
+}
+
 var Dispatcher = function ( ) {
     this.map = new Map("map");
 
     this.initialize(); 
+   
+    $("#address").on('keypress',$.proxy(function(e){if(e.keyCode==13){this.geocodeAddress($("#address").val()); $("#comments").focus();}},this));
 
     $("#address").on("blur",$.proxy(function(){this.geocodeAddress($("#address").val())},this));
     $("#map").on("click",function(){$("#address").blur();});
@@ -119,7 +128,17 @@ Dispatcher.prototype.geocodeAddress = function ( address ) {
     });
 }
 
-Dispatcher.prototype.shortenLink = function ( lat, lng ) {
+
+Dispatcher.prototype.clearForm = function ( ) {
+    $("#address").val("");
+    $("#phone").val("");
+    $("#shortlink").val("");
+    $("#comments").val("");
+    this.campusGrid.unselectAll();
+    $("#phone").focus();
+}
+
+/*Dispatcher.prototype.shortenLink = function ( lat, lng ) {
     $.ajax({
         type: "POST",
         url: "http://getcooki.es/weborder/linkShortener.php",
@@ -130,9 +149,31 @@ Dispatcher.prototype.shortenLink = function ( lat, lng ) {
         success: function ( response ) { $("#shortlink").val(response.id); },
         error: function (response ) { console.log(response) }
     });
+} */
+
+Dispatcher.prototype.shortenLink = function ( lat, lng ) {
+    
+    var longLink = "https://maps.google.com/maps?q=loc:"+lat+","+lng;
+    $.ajax({
+        type: "POST",
+        url: "http://getcooki.es/u/yourls-api.php",
+        data: { 
+            signature: "44e631ccb7",
+            action: "shorturl",
+            url: longLink,
+            format: "json"
+        },
+        success: function ( response ) { $("#shortlink").val(response.shorturl); },
+        error: function (response ) { console.log(response) }
+    });
 }
 
 Dispatcher.prototype.dispatchOrder = function ( ) {
+    var that = this;
+    var _clearForm = function ( ) {
+        that.clearForm();
+    }
+
     $.ajax({
         type: "GET",
         url: "http://getcooki.es/weborder/dispatch/dispatchOrder.php",
@@ -143,7 +184,7 @@ Dispatcher.prototype.dispatchOrder = function ( ) {
             shortlink: $("#shortlink").val(),
             comments: $("#comments").val()
         },
-        success: function ( response ) { $("#result").text(response) },
+        success: function ( response ) { $("#result").text(response); _clearForm(); },
         error: function ( ) { alert("Order not placed") }
     });
 }
