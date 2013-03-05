@@ -11,15 +11,10 @@ require('../../Twilio/Services/Twilio.php');
 $to =  $_REQUEST['phoneNumber'];
 $from = '+19785284097';
 $message = $_REQUEST['message'];
+$options = array("StatusCallback" => "http://getcooki.es/weborder/dispatch/TwilioSmsStatusCallback.php"); 
 
-$sms = $client->account->sms_messages->create($from,$to,$message);          
+$sms = $client->account->sms_messages->create($from,$to,$message,$options);          
 $smsMessageId = $sms->sid;
-
-
-$sql = "INSERT INTO texter VALUES ('',?,?,CURRENT_TIMESTAMP,?,?)";
-$statement = $db->prepare($sql);
-$statement->execute(array($to,$from,$message,$smsMessageId));
-
 
 $response->from = $from;
 $response->to = $to;
