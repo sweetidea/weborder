@@ -52,11 +52,16 @@ Texter.prototype.updateTextHistory = function ( texts ) {
 	}
 	if(texts.length>0) {
 		this.lastActivity = new Date(text.timestamp);
-		var height = historyBox.height();
-
-		this.$.find("#history").scrollTop(height);
+		this.newMessageAlert();
 	}	
 
+}
+
+Texter.prototype.newMessageAlert = function ( ) {
+	var historyBox = this.$.find("#history #messageContainer");
+	historyBox.addClass("newMessage");
+	var height = historyBox.height();
+	this.$.find("#history").scrollTop(height);
 }
 
 Texter.prototype.drawTextMessage = function ( data ) {
@@ -106,6 +111,7 @@ Texter.prototype.getTexts = function ( ) {
 Texter.prototype.loadTexts = function ( ) {
 	var historyBox = $("<div id='history' class='history'></div>");
 	var messageContainer = $("<div id='messageContainer'></div>");
+	messageContainer.on("click",function(){messageContainer.removeClass("newMessage");});
 	historyBox.append(messageContainer);
 	this.$.append(historyBox);	
 	var that = this;

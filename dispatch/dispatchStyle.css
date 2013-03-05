@@ -139,6 +139,10 @@ body {
     background-color: #78ADC4;
 }
 
+.newMessage {
+    background-color: #22414F;
+}
+
 .history .text  {
     color: white;
     padding: 3px;
