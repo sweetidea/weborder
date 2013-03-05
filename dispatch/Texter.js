@@ -52,16 +52,17 @@ Texter.prototype.updateTextHistory = function ( texts ) {
 	}
 	if(texts.length>0) {
 		this.lastActivity = new Date(text.timestamp);
-		this.newMessageAlert();
+		this.newMessageAlert(texts[0]);
 	}	
 
 }
 
-Texter.prototype.newMessageAlert = function ( ) {
+Texter.prototype.newMessageAlert = function ( text ) {
 	var historyBox = this.$.find("#history #messageContainer");
-	historyBox.addClass("newMessage");
 	var height = historyBox.height();
 	this.$.find("#history").scrollTop(height);
+	if(text.from != "+19785284097")
+		historyBox.addClass("newMessage");
 }
 
 Texter.prototype.drawTextMessage = function ( data ) {
@@ -143,7 +144,7 @@ Texter.prototype.sendText = function ( ) {
 	var message = this.$.find(".controls #message");
 	var that = this;
 	var _postText = function ( ) {
-		//that.displayAlert(message.val());
+		that.displayAlert(message.val());
 		message.val("");
 	}
 
@@ -176,6 +177,7 @@ Texter.prototype.displayAlert = function ( message ) {
 	var _hide = function ( ) {
 		that.$.find("#overlay").hide();
 	}
+	this.$.find("#overlay").position({top:400,left:400});
 	this.$.find("#overlay").show();
 	this.$.find("#overlay #message").html(message);
 	window.setTimeout(_hide,3000);

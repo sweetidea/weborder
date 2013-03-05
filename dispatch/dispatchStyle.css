@@ -183,8 +183,7 @@ body {
 
 .texterOverlay {
     display: none;
-    position: relative;
-    top: -70%;
+    position: absolute;
     margin: auto;
     z-index: 10000;
     width: 300px;
