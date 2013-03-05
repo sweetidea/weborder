@@ -1,0 +1,41 @@
+.dataView {
+    background-color: #004e72;
+	width: 100%;
+}
+
+.dataView .data {
+	
+}
+
+.dataView .schema {
+    background: #569556
+}
+
+.dataView .cell {
+	width: 20px;
+	display: inline-block;
+}
+
+.dataView .schema .cell {
+	
+}
+
+.dataView .data .cell {
+	
+}
+
+.dataView .id {
+	width: 20px;
+}
+
+.dataView .timestamp {
+	width: 100px;
+}
+
+.dataView .phone {
+	width: 100px;
+}
+
+.dataView .address {
+	width: auto;
+}
