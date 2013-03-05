@@ -185,7 +185,7 @@ Dispatcher.prototype.dispatchOrder = function ( ) {
             comments: $("#comments").val()
         },
         success: function ( response ) { $("#result").text(response); _clearForm(); },
-        error: function ( ) { alert("Order not placed") }
+        error: function ( ) { alert("FUCK SOMETHING WENT WRONG") }
     });
 }
 
