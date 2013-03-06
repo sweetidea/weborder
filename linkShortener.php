@@ -1,6 +1,6 @@
 <?php header('content-type: application/json; charset=utf-8');
 //taken from http://www.vijayjoshi.org/2011/01/12/php-shorten-urls-using-google-url-shortener-api/
-$link = "https://maps.google.com/maps?q=loc:".$_REQUEST['latitude'].",".$_REQUEST['longitude'];
+//$link = "https://maps.google.com/maps?q=loc:".$_REQUEST['latitude'].",".$_REQUEST['longitude']."&z=16";
 /*$request->longUrl = $link;
 $curl = curl_init();
 $result = curl_exec($curl);

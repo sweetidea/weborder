@@ -1,146 +1,44 @@
-var DispatchTile = function ( id, name, description, image ) {
-    this.idPrefix = 'zone';
-    this.id = this.idPrefix+''+id;
-    this.campusId = id;
-    this.name = name;
-    this.description = description;
-    this.image = image;
-    this.selected = false;
-    this.$ = '';
-}
 
-DispatchTile.prototype.unselect = function ( ) {
-    if (this.selected) {
-        this.selected = false;
-        this.$.removeClass("selected");
-    }
-}
 
-DispatchTile.prototype.toggleSelected = function ( ) {
-    this.selected = !this.selected;
-    if(this.selected)
-        this.$.addClass("selected");
-    else
-        this.$.removeClass("selected");
-}
-
-DispatchTile.prototype.draw = function ( ) {
-    tile = $("<div id='"+this.id+"' class='tile'></div>");
-    this.$ = tile;
-    var content = $("<div class='content'></div>");
-    content.append("<div class='title'>"+this.name+"</div>");
-    content.append("<div class='description'>"+this.description+"</div>");
-    this.$.append(content);
-    return tile;
-}
-
-function DispatchTileGrid ( selector, headerText, tiles ) { 
+var Dispatcher = function ( selector ) {
     this.$ = $(selector);
-    this.cols = 4;
-    this.headerText = headerText;
-    if (tiles)
-        this.tiles = tiles;
-    else
-        this.tiles = [];
-}
-
-DispatchTileGrid.prototype.draw = function ( ) {
-    var that = this;
-    var keydownListener = function ( keyCode ) {
-        if(keyCode!=39&&keyCode!=37)
-            return;
-        if(keyCode==13)
-            that.dispatchOrder();
-
-        var tileId = that.getCampus();
-        if(tileId)
-            tileId = tileId - 1;
-        else 
-            tileId = -1;
-        if(keyCode==39) //right
-            tileId = (tileId+1)%that.tiles.length;
-        if(keyCode==37)//left
-            tileId = (tileId-1)%that.tiles.length;
-        if(tileId<0)
-            tileId = that.tiles.length-1;
-        that.selectTile(tileId+1);
-    }
-    this.$.html("");
-    this.$.on('click',$.proxy(function(e){this.$.focus();},this));
-    this.$.on('focus',$.proxy(function(e){this.selectTile(1);},this));
-    this.$.on('keydown',function(e){keydownListener(e.keyCode);});
-    var layout = $("<div class='tileLayout'></div>");
-    //Draw the header text
-    if(this.headerText)
-        layout.append("<h1>"+this.headerText+"</h1>");
-    /**Draw the tile matrix*/
-    for ( var i = 0; i < Math.ceil(this.tiles.length/2); i++ ) {
-        var row = $("<div class='tileRow'></div>");
-        for ( var j = 0; j < this.cols; j++ ) {
-            tile = this.tiles[(i*this.cols)+j];
-            if(tile) {
-                var tileDiv = tile.draw();
-                tileDiv.on('click',$.proxy(function(){this.getSelected(event);},this));
-                row.append(tileDiv);
-            }
-        }
-        layout.append(row);
-    }    
-    this.$.append(layout);
-    
-  
-}
-
-DispatchTileGrid.prototype.selectTile = function ( tileId ) {
-    var prefix = "";
-    for(var tile in this.tiles) {
-        tile = this.tiles[tile];
-        if(parseInt(tileId)>=0) 
-            prefix = tile.idPrefix;
-        if(prefix+''+tileId == tile.id ) {
-            tile.toggleSelected();
-        } else {
-            tile.unselect();
-        }
-    }
-}
-
-DispatchTileGrid.prototype.getSelected = function ( e ) {
-    var targetId = e.currentTarget.id;
-    this.selectTile(targetId);
-}
-
-DispatchTileGrid.prototype.getCampus = function ( ) {
-    for(var tile in this.tiles) {
-        tile = this.tiles[tile];
-        if(tile.selected)
-            return tile.campusId;
-    }
-}
-
-DispatchTileGrid.prototype.unselectAll = function ( ) {
-    for(var tile in this.tiles) {
-        tile = this.tiles[tile];
-        tile.unselect();
-    }
-}
-
-var Dispatcher = function ( ) {
-    this.map = new Map("map");
-
     this.initialize(); 
-   
-    $("#address").on('keypress',$.proxy(function(e){if(e.keyCode==13){this.geocodeAddress($("#address").val()); $("#comments").focus();}},this));
-
-    $("#address").on("blur",$.proxy(function(){this.geocodeAddress($("#address").val())},this));
-    $("#map").on("click",function(){$("#address").blur();});
-    $(".controls input[type='button']").on("click",$.proxy(function(){this.dispatchOrder()},this));
 }
 
 Dispatcher.prototype.draw = function ( ) {
+    this.$.append("<h1>Dispatcher</h1>");
+    this.console = $("<div class='console'>Hello</div>");
+    this.$.append(this.console);
+    this.console.hide();
+    this.$.append("<input type='text' id='phone' placeholder='Phone #' tabindex='1'></input>");
+    this.$.append("<input type='text' id='address' placeholder='Address' tabindex='2'></input>");
+    this.$.append("<div id='map'></div>");
+    this.$.append("<input type='text' id='shortlink' placeholder='Short link' tabindex='3'></input>");
+    this.$.append("<input type='text' id='comments' placeholder='Comments' tabindex='4'></input>");
+    this.$.append("<h1>Select Campus</h1>");
+    this.$.append("<div id='campusGrid' tabindex='4'></div>");
+    this.$.append("<div class='controls'><input type='button' value='SUBMIT' tabindex='5'></input></div>");
+
+    this.$.find("#address").on('keypress',$.proxy(function(e){if(e.keyCode==13){this.geocodeAddress(this.$.find("#address").val()); this.$.find("#comments").focus();}},this));
+    this.$.find("#address").on("blur",$.proxy(function(){this.geocodeAddress(this.$.find("#address").val())},this));
+    this.$.find(".controls input[type='button']").on("click",$.proxy(function(){this.dispatchOrder()},this));
+
+    var that = this;
     this.map.draw();
+    this.$.find("#map").on("click",function(){that.$.find("#shortlink").focus();});
     this.campusGrid.draw();
-    this.console = $("#dispatcher .console");
+    this.campusGrid.on('keydown',function(e){if(e.keyCode==13) that.dispatchOrder();});
+}
+
+
+Dispatcher.prototype.drawShortlink = function ( ) {
+    //draw shortlink controls. Shortlink field should be disabled. 
+    //Shortlink field needs a click event to select all the text in the box
+    //Shortlink should have a toggle for do not send that doesnt reset along with other form elements
+
+
+    //ALTERNATE IDEA
+    //have an on/off switch on each tile for the short link so you can set it per runner
 }
 
 Dispatcher.prototype.geocodeAddress = function ( address ) {
@@ -161,30 +59,17 @@ Dispatcher.prototype.geocodeAddress = function ( address ) {
 
 
 Dispatcher.prototype.clearForm = function ( ) {
-    $("#address").val("");
-    $("#phone").val("");
-    $("#shortlink").val("");
-    $("#comments").val("");
+    this.$.find("#address").val("");
+    this.$.find("#phone").val("");
+    this.$.find("#shortlink").val("");
+    this.$.find("#comments").val("");
     this.campusGrid.unselectAll();
-    $("#phone").focus();
+    this.$.find("#phone").focus();
 }
-
-/*Dispatcher.prototype.shortenLink = function ( lat, lng ) {
-    $.ajax({
-        type: "POST",
-        url: "http://getcooki.es/weborder/linkShortener.php",
-        data: { 
-            latitude: lat,
-            longitude: lng
-        },
-        success: function ( response ) { $("#shortlink").val(response.id); },
-        error: function (response ) { console.log(response) }
-    });
-} */
 
 Dispatcher.prototype.shortenLink = function ( lat, lng ) {
     
-    var longLink = "https://maps.google.com/maps?q=loc:"+lat+","+lng;
+    var longLink = "https://maps.google.com/maps?q=loc:"+lat+","+lng+"&z=16";
     $.ajax({
         type: "POST",
         url: "http://getcooki.es/u/yourls-api.php",
@@ -207,7 +92,11 @@ Dispatcher.prototype.dispatchOrder = function ( ) {
     var _clearForm = function ( ) {
         that.clearForm();
     }
-
+    var shortCheck = this.campusGrid.getCampusShortlink();
+    shorty = '';
+    if ( shortCheck ) {
+        shorty = $("#shortlink").val();
+    }
     $.ajax({
         type: "GET",
         url: "http://getcooki.es/weborder/dispatch/dispatchOrder.php",
@@ -215,29 +104,34 @@ Dispatcher.prototype.dispatchOrder = function ( ) {
             campus: this.campusGrid.getCampus(),
             address: $("#address").val(),
             phone: $("#phone").val(),
-            shortlink: $("#shortlink").val(),
+            shortlink: shorty,
             comments: $("#comments").val()
         },
-        success: function ( response ) { _console("Order sent."); _clearForm(); },
+        success: function ( response ) { console.log(response); _console("Order sent."); _clearForm(); },
         error: function ( ) { _console("Order NOT sent."); }
     });
 }
 
 Dispatcher.prototype.initialize = function ( ) {
     var that = this;
-    var _initializeTiles = function ( result ) {
-        that.tiles = [];
+    var _initializeGrid = function ( result ) {
+        tiles = [];
         for( var zone in result ) {
             var zone = result[zone]; //eventually use zone.runnerID as well as other attr
-            that.tiles.push(new DispatchTile(zone.zoneId,zone.zoneName,zone.shortName));
+            tiles.push(new DispatchTile(zone.zoneId,zone.zoneName,zone.shortName));
         }
+        that.campusGrid = new DispatchTileGrid("#campusGrid","",tiles);
+    };
+    var _initialize = function ( ) {
+        that.map = new Map("map");
+        that.draw();
     };
     
 
     $.ajax({
         type: "GET",
         url: "http://getcooki.es/weborder/getZoneAssignments.php",
-        success: function ( response ) { _initializeTiles(response); that.campusGrid = new DispatchTileGrid("#campusGrid","",that.tiles); that.draw();},
+        success: function ( response ) { _initializeGrid(response); _initialize(); },
         error: function ( ) { alert("Order not placed") }
     });
 }

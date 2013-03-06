@@ -76,9 +76,8 @@ body {
 }
 
 .tile {
-    width: 20%;
+    width: 19%;
     padding: 2%;
-    padding-right: 0px;
     display: inline-block;
     background-color: #569556;
     border-radius: 10px;
@@ -114,7 +113,7 @@ body {
 
 .tile .title {
     text-align: left;
-    padding-bottom: 35px;
+    padding-bottom: 15px;
     font-size: 0.9em;
 }
 
@@ -127,6 +126,9 @@ body {
     background-color: #1E331E;
 }
 
+.tileLayoutSelected {
+    background-color: #62B1DE !important;
+}
 
 .tileLayout {
     background-color: #1d638b;
@@ -136,6 +138,19 @@ body {
 
 #campusGrid:focus {
     outline: none;
+}
+
+.toggle {
+    display: inline-block;
+
+}
+.toggleContainer {
+    border-radius: 10px;
+    background-color: green;
+}
+
+.off {
+    background-color: red;
 }
 
 .tileLayout:focus {

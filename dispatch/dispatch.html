@@ -3,6 +3,7 @@
     <link href='http://fonts.googleapis.com/css?family=Lilita+One' rel='stylesheet' type='text/css'>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <script src="../Map.js"></script>
+<script src="./DispatchGrid.js"></script>
 <link rel="stylesheet" href="./dispatchStyle.css"  type='text/css'/>
 <script src="./dispatcher.js"></script>
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
@@ -11,7 +12,7 @@
   		<script type="text/javascript">
 
 function initialize ( ) {
-  var dispatcher = new Dispatcher();
+  var dispatcher = new Dispatcher("#dispatcher");
 }
 
 $(document).ready(initialize);
@@ -19,16 +20,7 @@ $(document).ready(initialize);
 </head>
 <body>
 <div id="dispatcher" class="container">
-  <h1>Dispatcher</h1>
-  <div class="console"></div>
-  <input type="text" id="phone" placeholder="Phone #" tabindex="1"></input>
-  <input type="text" id="address" placeholder="Address" tabindex="2"></input>
-  <div id="map"></div>
-  <input type="text" id="shortlink" placeholder="Short link"></input>
-  <input type="text" id="comments" placeholder="Comments" tabindex="3"></input>
-  <h1>Select Campus</h1>
-  <div id="campusGrid" tabindex="4"></div>
-  <div class='controls'><input type='button' value='SUBMIT'></input></div>
+
 </div>
 </body>
 
