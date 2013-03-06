@@ -18,15 +18,16 @@ $(document).ready(initialize);
   		</script>
 </head>
 <body>
-<div id="dispatcher" class="container" style="height: 96%; width: 96%;">
+<div id="dispatcher" class="container">
   <h1>Dispatcher</h1>
+  <div class="console"></div>
   <input type="text" id="phone" placeholder="Phone #" tabindex="1"></input>
   <input type="text" id="address" placeholder="Address" tabindex="2"></input>
   <div id="map"></div>
   <input type="text" id="shortlink" placeholder="Short link"></input>
   <input type="text" id="comments" placeholder="Comments" tabindex="3"></input>
   <h1>Select Campus</h1>
-  <div id="campusGrid"></div>
+  <div id="campusGrid" tabindex="4"></div>
   <div class='controls'><input type='button' value='SUBMIT'></input></div>
 </div>
 </body>

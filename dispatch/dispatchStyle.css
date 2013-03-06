@@ -5,8 +5,7 @@ body {
 }
 
 .container {
-    width: 47%;
-    height: 400px;
+    width: 96%;
     padding: 1%;
     border-radius: 10px;
     background-color: #004e72;
@@ -33,12 +32,20 @@ body {
     font-size: 2em;
     margin-top: 0.5em;
     margin-bottom: 0.5em;
+    display: inline-block;
 }
 
 .container .total {
     font-size: 1.4em;
     text-align: center;
 }
+
+.container .console {
+    display: inline-block;
+    float: right;
+    background-color: black;
+}
+
 
 .container .controls input {
     margin: 0 auto;
@@ -69,7 +76,7 @@ body {
 }
 
 .tile {
-    width: 42%;
+    width: 20%;
     padding: 2%;
     padding-right: 0px;
     display: inline-block;
@@ -127,71 +134,20 @@ body {
     padding: 10px;
 }
 
+#campusGrid:focus {
+    outline: none;
+}
+
+.tileLayout:focus {
+    outline: none;
+}
+
+.tileRow:focus {
+    outline: none;
+}
+
+
 .controls input[type='button'] {
     cursor: hand;
 }
 
-.history {
-    overflow-y: scroll;
-    height: 75%;
-    width: 100%;
-    /*background: #22414F;*/
-    background-color: #78ADC4;
-}
-
-.newMessage {
-    background-color: #22414F;
-}
-
-.history .text  {
-    color: white;
-    padding: 3px;
-    max-width: 48%;
-    background-color: #1d638b;
-    background-color: ;
-    margin-left: 5px;
-    font-size: 0.8em;
-    margin-bottom: 5px;
-    border-radius: 10px;
-}
-
-.history .text:last-child {
-    margin-bottom: 0px;
-}
-
-.text .message {
-    font-size: 1.5em;
-    margin-bottom: 5px;
-}
-
-.history .from {
-    color: black;
-    margin-left: 50%;
-    background-color: #569556;
-
-}
-
-.text .number {
-    display: inline-block;
-}
-
-.text .timestamp {
-    margin-left: 5px;
-    display: inline-block;
-}
-
-
-.texterOverlay {
-    display: none;
-    position: absolute;
-    margin: auto;
-    z-index: 10000;
-    width: 300px;
-    padding: 5px;
-    background: black;
-    border: 3px solid yellow;
-}
-
-.texterOverlay #message {
-    text-align: center;
-}

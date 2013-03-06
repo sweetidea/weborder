@@ -36,7 +36,7 @@ DispatchTile.prototype.draw = function ( ) {
 
 function DispatchTileGrid ( selector, headerText, tiles ) { 
     this.$ = $(selector);
-    this.cols = 2;
+    this.cols = 4;
     this.headerText = headerText;
     if (tiles)
         this.tiles = tiles;
@@ -45,10 +45,34 @@ function DispatchTileGrid ( selector, headerText, tiles ) {
 }
 
 DispatchTileGrid.prototype.draw = function ( ) {
+    var that = this;
+    var keydownListener = function ( keyCode ) {
+        if(keyCode!=39&&keyCode!=37)
+            return;
+        if(keyCode==13)
+            that.dispatchOrder();
+
+        var tileId = that.getCampus();
+        if(tileId)
+            tileId = tileId - 1;
+        else 
+            tileId = -1;
+        if(keyCode==39) //right
+            tileId = (tileId+1)%that.tiles.length;
+        if(keyCode==37)//left
+            tileId = (tileId-1)%that.tiles.length;
+        if(tileId<0)
+            tileId = that.tiles.length-1;
+        that.selectTile(tileId+1);
+    }
     this.$.html("");
+    this.$.on('click',$.proxy(function(e){this.$.focus();},this));
+    this.$.on('focus',$.proxy(function(e){this.selectTile(1);},this));
+    this.$.on('keydown',function(e){keydownListener(e.keyCode);});
     var layout = $("<div class='tileLayout'></div>");
     //Draw the header text
-    layout.append("<h1>"+this.headerText+"</h1>");
+    if(this.headerText)
+        layout.append("<h1>"+this.headerText+"</h1>");
     /**Draw the tile matrix*/
     for ( var i = 0; i < Math.ceil(this.tiles.length/2); i++ ) {
         var row = $("<div class='tileRow'></div>");
@@ -67,16 +91,23 @@ DispatchTileGrid.prototype.draw = function ( ) {
   
 }
 
-DispatchTileGrid.prototype.getSelected = function ( e ) {
-    var targetId = e.currentTarget.id;
+DispatchTileGrid.prototype.selectTile = function ( tileId ) {
+    var prefix = "";
     for(var tile in this.tiles) {
         tile = this.tiles[tile];
-        if(targetId == tile.id ) {
+        if(parseInt(tileId)>=0) 
+            prefix = tile.idPrefix;
+        if(prefix+''+tileId == tile.id ) {
             tile.toggleSelected();
         } else {
             tile.unselect();
         }
     }
+}
+
+DispatchTileGrid.prototype.getSelected = function ( e ) {
+    var targetId = e.currentTarget.id;
+    this.selectTile(targetId);
 }
 
 DispatchTileGrid.prototype.getCampus = function ( ) {
@@ -109,7 +140,7 @@ var Dispatcher = function ( ) {
 Dispatcher.prototype.draw = function ( ) {
     this.map.draw();
     this.campusGrid.draw();
-
+    this.console = $("#dispatcher .console");
 }
 
 Dispatcher.prototype.geocodeAddress = function ( address ) {
@@ -170,6 +201,9 @@ Dispatcher.prototype.shortenLink = function ( lat, lng ) {
 
 Dispatcher.prototype.dispatchOrder = function ( ) {
     var that = this;
+    var _console = function ( message ) { 
+        that.displayAlert(message);
+    }
     var _clearForm = function ( ) {
         that.clearForm();
     }
@@ -184,8 +218,8 @@ Dispatcher.prototype.dispatchOrder = function ( ) {
             shortlink: $("#shortlink").val(),
             comments: $("#comments").val()
         },
-        success: function ( response ) { $("#result").text(response); _clearForm(); },
-        error: function ( ) { alert("FUCK SOMETHING WENT WRONG") }
+        success: function ( response ) { _console("Order sent."); _clearForm(); },
+        error: function ( ) { _console("Order NOT sent."); }
     });
 }
 
@@ -206,4 +240,14 @@ Dispatcher.prototype.initialize = function ( ) {
         success: function ( response ) { _initializeTiles(response); that.campusGrid = new DispatchTileGrid("#campusGrid","",that.tiles); that.draw();},
         error: function ( ) { alert("Order not placed") }
     });
+}
+
+Dispatcher.prototype.displayAlert = function ( message ) {
+    var that = this;
+    var _hide = function ( ) {
+        that.console.hide();
+    }
+    this.console.show();
+    this.console.html(message);
+    window.setTimeout(_hide,3000);
 }
