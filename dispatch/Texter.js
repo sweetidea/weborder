@@ -14,6 +14,9 @@ var Texter = function ( selector, phoneNumber ) {
 
 Texter.prototype.draw = function () {
 	this.$.append("<h1>"+this.firstName+" "+this.lastName+"</h1>");
+	this.console = $("<div class='console'>Hello</div>");
+	this.$.append(this.console);
+	this.console.hide();
 	this.loadTexts();
 	this.loadControls();
 }
@@ -61,8 +64,10 @@ Texter.prototype.newMessageAlert = function ( text ) {
 	var historyBox = this.$.find("#history #messageContainer");
 	var height = historyBox.height();
 	this.$.find("#history").scrollTop(height);
-	if(text.from != "+19785284097")
+	if(text.from != "+19785284097") {
 		historyBox.addClass("newMessage");
+		this.displayAlert("New message!");
+	}
 }
 
 Texter.prototype.drawTextMessage = function ( data ) {
@@ -141,11 +146,12 @@ Texter.prototype.loadTexts = function ( ) {
 }
 
 Texter.prototype.sendText = function ( ) {
-	var message = this.$.find(".controls #message");
+	var messageBox = this.$.find(".controls #message");
 	var that = this;
-	var _postText = function ( ) {
-		that.displayAlert(message.val());
-		message.val("");
+	var _postText = function ( message, clear ) {
+		that.displayAlert(message);
+		if(clear) 
+			messageBox.val("");
 	}
 
 	$.ajax({
@@ -153,10 +159,10 @@ Texter.prototype.sendText = function ( ) {
         url: "http://getcooki.es/weborder/dispatch/sendText.php",
         data: {
         	phoneNumber: this.phoneNumber,
-        	message: message.val()
+        	message: messageBox.val()
         },
-        success: function ( response ) { _postText(); },
-        error: function ( ) { console.log("Noooo text not sent"); }
+        success: function ( response ) { _postText("Message sent.",true); },
+        error: function ( ) { _postText("Message not sent!"); }
     });
 }
 
@@ -175,10 +181,10 @@ Texter.prototype.loadControls = function ( ) {
 Texter.prototype.displayAlert = function ( message ) {
 	var that = this;
 	var _hide = function ( ) {
-		that.$.find("#overlay").hide();
+		that.console.hide();
 	}
-	this.$.find("#overlay").position({top:400,left:400});
-	this.$.find("#overlay").show();
-	this.$.find("#overlay #message").html(message);
+	//this.$.find("#overlay").position({top:400,left:400});
+	this.console.show();
+	this.console.html(message);
 	window.setTimeout(_hide,3000);
 }
