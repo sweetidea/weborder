@@ -1,5 +1,5 @@
 .dataView {
-    background-color: #004e72;
+    background-color: #1d638b;
 	width: 100%;
 }
 
@@ -12,7 +12,7 @@
 }
 
 .dataView .cell {
-	width: 20px;
+	width: 100px;
 	display: inline-block;
 }
 

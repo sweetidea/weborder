@@ -10,7 +10,9 @@ $query = $statement->execute(array($tableName));
 $result->schema = $statement->fetchAll(PDO::FETCH_COLUMN);
 
 
-$sql = "SELECT * FROM ".$tableName;
+$sql_getForExcel = "SELECT dispatcher.phone, dispatcher.timestamp, zones.shortName AS zone, employee.shortName, dispatcher.address  FROM zones, employee, dispatcher WHERE employee.id = dispatcher.runnerId AND zones.id = dispatcher.campusId ORDER BY dispatcher.timestamp ASC";
+$sql = $sql_getForExcel;
+//$sql = "SELECT * FROM ".$tableName;
 $statement = $db->prepare($sql);
 $query = $statement->execute();
 $data = $statement->fetchAll(PDO::FETCH_ASSOC);
