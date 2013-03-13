@@ -1,5 +1,3 @@
-
-
 var Dispatcher = function ( selector ) {
     this.$ = $(selector);
     this.initialize(); 
@@ -10,15 +8,25 @@ Dispatcher.prototype.draw = function ( ) {
     this.console = $("<div class='console'>Hello</div>");
     this.$.append(this.console);
     this.console.hide();
-    this.$.append("<input type='text' id='phone' placeholder='Phone #' tabindex='1'></input>");
-    this.$.append("<input type='text' id='address' placeholder='Address' tabindex='2'></input>");
+    var inputContainer = $("<div class='inputContainer'></div>");
+    inputContainer.append("<input type='text' id='phone' placeholder='Phone #' tabindex='1'></input>");
+    inputContainer.append("<input type='text' id='address' placeholder='Address' tabindex='2'></input>");
+    inputContainer.append("<input type='text' id='shortlink' placeholder='Short link' tabindex='3'></input>");
+    inputContainer.append("<input type='text' id='comments' placeholder='Comments' tabindex='4'></input>");
+    var customerContainer = $("<div class='customerWidget'></div>");
+
+    this.$.append(inputContainer);
+    this.$.append(customerContainer);
+
+    this.customerWidget = new CustomerWidget(".customerWidget",false);
     this.$.append("<div id='map'></div>");
-    this.$.append("<input type='text' id='shortlink' placeholder='Short link' tabindex='3'></input>");
-    this.$.append("<input type='text' id='comments' placeholder='Comments' tabindex='4'></input>");
+    
     this.$.append("<h1>Select Campus</h1>");
     this.$.append("<div id='campusGrid' tabindex='4'></div>");
     this.$.append("<div class='controls'><input type='button' value='SUBMIT' tabindex='5'></input></div>");
 
+    this.$.find("#phone").on('keypress',$.proxy(function(e){if(e.keyCode==13){this.customerWidget.loadUser(this.$.find("#phone").val()); this.$.find("#address").focus();}},this));
+    this.$.find("#phone").on('blur',$.proxy(function(){this.customerWidget.loadUser(this.$.find("#phone").val())},this));
     this.$.find("#address").on('keypress',$.proxy(function(e){if(e.keyCode==13){this.geocodeAddress(this.$.find("#address").val()); this.$.find("#comments").focus();}},this));
     this.$.find("#address").on("blur",$.proxy(function(){this.geocodeAddress(this.$.find("#address").val())},this));
     this.$.find(".controls input[type='button']").on("click",$.proxy(function(){this.dispatchOrder()},this));

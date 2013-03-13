@@ -19,6 +19,22 @@ body {
     width: 100%;
 }
 
+.container .inputContainer {
+    display: inline-block;
+    width: 50%;
+}
+
+.container .inputContainer input {
+    width: 100%;
+    display: block;
+}
+
+.container .customerWidget {
+    width: 40%;
+    vertical-align: top;
+    margin-left: 3%;
+    display: inline-block;
+}
 .container > div {
     margin-bottom: 5px;
 }
@@ -32,7 +48,7 @@ body {
     font-size: 2em;
     margin-top: 0.5em;
     margin-bottom: 0.5em;
-    display: inline-block;
+    display: block;
 }
 
 .container .total {
@@ -41,8 +57,10 @@ body {
 }
 
 .container .console {
-    display: inline-block;
-    float: right;
+    position: absolute;
+    top: 2%;
+    right: 10%;
+    display: block;
     background-color: black;
 }
 
