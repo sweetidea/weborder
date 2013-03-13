@@ -1,11 +1,7 @@
-var CustomerWidget = function ( selector, editable ) {
+var CustomerWidget = function ( selector ) {
 	if(!selector)
 		return false;
 	this.phone = "";
-	if(editable)
-		this.editable = true;
-	else
-		this.editable = false;
 	this.selector = selector;
 	this.$ = $(this.selector);
 	this.user = "";
@@ -13,28 +9,17 @@ var CustomerWidget = function ( selector, editable ) {
 }
 
 CustomerWidget.prototype.getPhoneNumber = function ( ) {
-	if(this.editable) {
-		return this.$.find("#phoneNumberBox").val();
-	} else {
-		return this.phone;
-	}
+	return this.phone;
 }
 
 CustomerWidget.prototype.draw = function ( ) {
 	var that = this;
 	var phoneNumber = $("<div class='phone'></div>");
-	var phoneNumberBox = $("<input type='text' id='phoneNumberBox' placeholder='Phone #'></input>");
-	var _getPhoneNumber = $.proxy(function ( ) {
-		return this.$.find("#phoneNumberBox").val();
-	},this);
+	var phoneNumberBox = $("<span id='phoneNumberBox'></span>");
+
 	var _getCreditModifier = $.proxy(function ( ) {
 		return parseFloat(this.$.find("#creditModifier").val());
 	},this);
-	if(this.editable) {
-		phoneNumberBox.on('keydown',function(e){if(e.keyCode==13) that.loadUser(_getPhoneNumber()); });
-		phoneNumberBox.on('blur',function(){that.loadUser(_getPhoneNumber());});
-		phoneNumberBox.prop("disabled","disabled");
-	}
 
 	phoneNumber.append(phoneNumberBox);
 	
@@ -48,9 +33,7 @@ CustomerWidget.prototype.draw = function ( ) {
 }
 
 CustomerWidget.prototype.modifyCredit = function ( credit, subtract ) {
-	var _getPhoneNumber = $.proxy(function ( ) {
-		return this.$.find("#phoneNumberBox").val();
-	},this);
+	var that = this;
 
 	var _updateCredit = $.proxy(function ( credit ) {
 		this.$.find(".credit #value").text(credit);
@@ -60,7 +43,7 @@ CustomerWidget.prototype.modifyCredit = function ( credit, subtract ) {
         type: "POST",
         url: "http://getcooki.es/weborder/dispatch/modifyCredit.php",
         data: {
-        	phoneNumber: _getPhoneNumber(),
+        	phoneNumber: that.getPhoneNumber(),
         	credit: credit,
         	subtract: subtract
         },
@@ -69,18 +52,20 @@ CustomerWidget.prototype.modifyCredit = function ( credit, subtract ) {
     });
 }
 
+CustomerWidget.prototype.drawData = function ( user ) {
+	if ( user ) {
+		this.$.find("#phoneNumberBox").text(user.phone);
+		this.$.find(".credit #value").text(user.credit);
+	} else {
+		this.$.find("#phoneNumberBox").text(this.phone);
+		this.$.find(".credit #value").text("User not found.");
+	}
+}
+
 CustomerWidget.prototype.loadUser = function ( phone ) {
 	var that = this;
 	var phoneNumber = phone;
-	var _drawData = function ( user ) {
-		if ( user ) {
-			that.$.find("#phoneNumberBox").val(user.phone);
-			that.$.find(".credit #value").text(user.credit);
-		} else {
-			that.$.find("#phoneNumberBox").val(phoneNumber);
-			that.$.find(".credit #value").text("User not found.");
-		}
-	};
+	this.phone = phone;
 
 	var _loadInformation = function ( response ) {
 		response = response[0];
@@ -100,7 +85,51 @@ CustomerWidget.prototype.loadUser = function ( phone ) {
         data: {
         	phoneNumber: phoneNumber
         },
-        success: function ( response ) { _drawData(_loadInformation(response)); },
+        success: function ( response ) { that.drawData(_loadInformation(response)); },
         error: function ( ) { alert("User could not be loaded.") }
     });
+}
+
+var CustomerWidgetEditable = function ( selector ) {
+	CustomerWidget.call(this,selector);
+}
+
+CustomerWidgetEditable.prototype = new CustomerWidget();
+CustomerWidgetEditable.prototype.constructor = CustomerWidgetEditable;
+
+CustomerWidgetEditable.prototype.draw = function ( ) {
+	var that = this;
+	var phoneNumber = $("<div class='phone'></div>");
+	var phoneNumberBox = $("<input type='text' id='phoneNumberBox' placeholder='Phone #'></input>");
+
+	var _getCreditModifier = $.proxy(function ( ) {
+		return parseFloat(this.$.find("#creditModifier").val());
+	},this);
+
+	phoneNumberBox.on('keydown',function(e){if(e.keyCode==13) that.loadUser(that.getPhoneNumber()); });
+	phoneNumberBox.on('blur',function(){that.loadUser(that.getPhoneNumber());});
+
+	phoneNumber.append(phoneNumberBox);
+	
+	this.$.append(phoneNumber);
+	var infoContainer = $("<div class='infoContainer'></div>")
+	infoContainer.append("<div class='credit'>Credit: <span id='value'></span></div>");
+	infoContainer.append("<div class='creditControl'><input type='text' id='creditModifier'></input><input type='button' value='ADD' id='add'></input><input type='button' value='SUB' id='sub'></input></div>");
+	infoContainer.find("#add").on('click',function(){that.modifyCredit(_getCreditModifier);});
+	infoContainer.find("#sub").on('click',function(){that.modifyCredit(_getCreditModifier,true);});
+	this.$.append(infoContainer);
+}
+
+CustomerWidgetEditable.prototype.getPhoneNumber = function ( ) {
+	return this.$.find("#phoneNumberBox").val();
+}
+
+CustomerWidgetEditable.prototype.drawData = function ( user ) {
+	if ( user ) {
+		this.$.find("#phoneNumberBox").val(user.phone);
+		this.$.find(".credit #value").text(user.credit);
+	} else {
+		this.$.find("#phoneNumberBox").val(phoneNumber);
+		this.$.find(".credit #value").text("User not found.");
+	}
 }

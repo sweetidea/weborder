@@ -12,6 +12,8 @@
 
 function initialize ( ) {
 	var customerWidget = new CustomerWidget("#customer"); 
+	customerWidget.loadUser("+19784304622");
+	var customerWidget2 = new CustomerWidgetEditable("#customer2");
 }
 
 $(document).ready(initialize);
@@ -19,6 +21,8 @@ $(document).ready(initialize);
 </head>
 <body>
 <div id="customer" class="customerWidget">
+</div>
+<div id="customer2" class="customerWidget">
 </div>
 </body>
 

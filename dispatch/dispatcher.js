@@ -11,14 +11,14 @@ Dispatcher.prototype.draw = function ( ) {
     var inputContainer = $("<div class='inputContainer'></div>");
     inputContainer.append("<input type='text' id='phone' placeholder='Phone #' tabindex='1'></input>");
     inputContainer.append("<input type='text' id='address' placeholder='Address' tabindex='2'></input>");
-    inputContainer.append("<input type='text' id='shortlink' placeholder='Short link' tabindex='3'></input>");
-    inputContainer.append("<input type='text' id='comments' placeholder='Comments' tabindex='4'></input>");
+    inputContainer.append("<input type='text' id='comments' placeholder='Comments' tabindex='3'></input>");
+    inputContainer.append("<input type='text' id='shortlink' placeholder='Short link' tabindex='4'></input>");
     var customerContainer = $("<div class='customerWidget'></div>");
 
     this.$.append(inputContainer);
     this.$.append(customerContainer);
 
-    this.customerWidget = new CustomerWidget(".customerWidget",false);
+    this.customerWidget = new CustomerWidget(".customerWidget");
     this.$.append("<div id='map'></div>");
     
     this.$.append("<h1>Select Campus</h1>");
