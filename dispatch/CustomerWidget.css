@@ -1,0 +1,16 @@
+/*CustomerWidget css*/
+.customerWidget {
+	background-color: #1d638b;
+	border-radius: 10px;
+	padding: 10px;
+}
+
+.customerWidget input {
+	width: 100%;
+	display: block;
+}
+
+.customerWidget input[type=button] {
+	display: inline-block;
+	width: 50%;
+}
