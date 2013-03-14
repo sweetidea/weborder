@@ -25,22 +25,10 @@ DispatchTile.prototype.toggleSelected = function ( ) {
 }
 
 DispatchTile.prototype.draw = function ( ) {
-    var shortlinkToggleEl = $("<div id='shortlinkToggle' class='toggle'>ON</div>");
-    var toggleContainer = $("<div class='toggleContainer' >LINK:</div>");
-    var shortlinkToggle = function ( ) {
-        toggleContainer.toggleClass('off'); 
-        if(toggleContainer.hasClass('off'))
-            shortlinkToggleEl.text('OFF');
-        else
-            shortlinkToggleEl.text('ON');
-    };
     tile = $("<div id='"+this.id+"' class='tile'></div>");
     this.$ = tile;
     var content = $("<div class='content'></div>");
     content.append("<div class='title'>"+this.name+"</div>");
-    toggleContainer.on('click',function(){event.stopPropagation();shortlinkToggle();});
-    toggleContainer.append(shortlinkToggleEl);
-    content.append(toggleContainer);
     content.append("<div class='description'>"+this.description+"</div>");
     this.$.append(content);
     return tile;
@@ -125,15 +113,6 @@ DispatchTileGrid.prototype.selectTile = function ( tileId ) {
 DispatchTileGrid.prototype.getSelected = function ( e ) {
     var targetId = e.currentTarget.id;
     this.selectTile(targetId);
-}
-
-DispatchTileGrid.prototype.getCampusShortlink = function ( ) {
-    for(var tile in this.tiles) {
-        tile = this.tiles[tile];
-        if(tile.selected) {
-            return !tile.$.find(".toggleContainer").hasClass("off");
-        }
-    }
 }
 
 DispatchTileGrid.prototype.getCampus = function ( ) {

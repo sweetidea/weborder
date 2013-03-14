@@ -29,6 +29,7 @@ Dispatcher.prototype.draw = function ( ) {
     this.$.find("#phone").on('blur',$.proxy(function(){this.customerWidget.loadUser(this.$.find("#phone").val())},this));
     this.$.find("#address").on('keypress',$.proxy(function(e){if(e.keyCode==13){this.geocodeAddress(this.$.find("#address").val()); this.$.find("#comments").focus();}},this));
     this.$.find("#address").on("blur",$.proxy(function(){this.geocodeAddress(this.$.find("#address").val())},this));
+    this.$.find("#shortlink").on('click',$.proxy(function(){this.$.find("#shortlink").toggleClass("off");},this));
     this.$.find(".controls input[type='button']").on("click",$.proxy(function(){this.dispatchOrder()},this));
 
     var that = this;
@@ -100,7 +101,7 @@ Dispatcher.prototype.dispatchOrder = function ( ) {
     var _clearForm = function ( ) {
         that.clearForm();
     }
-    var shortCheck = this.campusGrid.getCampusShortlink();
+    var shortCheck = !this.$.find("#shortlink").hasClass('off');
     shorty = '';
     if ( shortCheck ) {
         shorty = $("#shortlink").val();

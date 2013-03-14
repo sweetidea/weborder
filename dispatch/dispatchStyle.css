@@ -4,6 +4,10 @@ body {
     padding: 0px;
 }
 
+.off {
+    background-color: red;
+}
+
 .container {
     width: 96%;
     padding: 1%;
