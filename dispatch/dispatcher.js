@@ -53,8 +53,12 @@ Dispatcher.prototype.drawShortlink = function ( ) {
 Dispatcher.prototype.geocodeAddress = function ( address ) {
     if(!address)
         return;
+    var swBound = new google.maps.LatLng(42.321240,-71.130810);
+    var neBound = new google.maps.LatLng(42.420415,-71.077251);
+    var bounds = new google.maps.LatLngBounds(swBound, neBound);
     var geocoderRequest = {
-        address: address
+        address: address,
+        bounds: bounds
     };
     var geocoder = new google.maps.Geocoder();
     that = this;
