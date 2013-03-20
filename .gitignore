@@ -2,7 +2,11 @@
 ##CUSTOM
 ####
 yourls/
+header.php
+include/
 website_fixes.txt
+error_log
+*.gif
 
 
 #################
