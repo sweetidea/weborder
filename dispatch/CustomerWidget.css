@@ -14,3 +14,29 @@
 	display: inline-block;
 	width: 50%;
 }
+
+.customerWidget .show {
+	display: block;	
+}
+
+.customerWidget .controls {
+
+}
+
+.customerWidget .creditContainer {
+	display: block;
+}
+
+.customerWidget .orderContainer {
+	display: none;
+	height: 10%;
+}
+
+
+
+.customerWidget .controls h3 {
+	display: inline-block;
+	cursor: hand;
+	margin: 0;
+	margin-left: 20%;
+}

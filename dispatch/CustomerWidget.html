@@ -3,8 +3,10 @@
     <link href='http://fonts.googleapis.com/css?family=Lilita+One' rel='stylesheet' type='text/css'>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <link rel="stylesheet" href="./CustomerWidget.css"  type='text/css'/>
+<link rel="stylesheet" href="./OrderListWidget.css"  type='text/css'/>
 
 <script src="./CustomerWidget.js"></script>
+<script src="./OrderListWidget.js"></script>
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
   <script src="https://checkout.stripe.com/v2/checkout.js"></script>
   		<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDbWc_3x-gGY0LnXMBpRukGoVNsJrLMbW0&sensor=true"></script>
@@ -13,7 +15,6 @@
 function initialize ( ) {
 	var customerWidget = new CustomerWidget("#customer"); 
 	customerWidget.loadUser("+19784304622");
-	var customerWidget2 = new CustomerWidgetEditable("#customer2");
 }
 
 $(document).ready(initialize);
