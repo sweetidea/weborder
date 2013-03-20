@@ -5,6 +5,8 @@
 <link rel="stylesheet" href="./cartStyle.css" />
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
   <script src="https://checkout.stripe.com/v2/checkout.js"></script>
+  <link rel="stylesheet" href="./cardStyle.css" />
+<script src="./CardView.js"></script>
   <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.0/jquery-ui.min.js"></script>
   		<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDbWc_3x-gGY0LnXMBpRukGoVNsJrLMbW0&sensor=true"></script>
   		<script type="text/javascript">
@@ -67,6 +69,7 @@ function ShoppingCart ( selector, packageQty, unitPrice, type ) {
     this.packageQty = packageQty;
     this.orderType = type; //1 is mail, 2 is box
     this.totalCost = 0;
+    this.views = [];
     if(this.orderType==1) {
         this.recipientInfoDiv = $("#templates #mailRecipientInfo");
         this.headerText = "By the Mail";
@@ -92,7 +95,10 @@ function ShoppingCart ( selector, packageQty, unitPrice, type ) {
 }
 
 ShoppingCart.prototype.draw = function ( ) {
+    var cards = [];
     this.$.html("");
+    var cardViewContainer = $('<div id="cardViewContainer"></div>');
+    this.$.append(cardViewContainer);
     var layout = $("<div class='tileLayout'></div>");
     layout.append("<h1>"+this.headerText+"</h1>");
     /**Draw the tile matrix*/
@@ -111,14 +117,19 @@ ShoppingCart.prototype.draw = function ( ) {
     }    
     //Draw the box showing the total amount
     layout.append("<div class='total'>TOTAL: $"+this.unitPrice+".00 x <span id='qty'>0</span> = $<span id='totalCost'>"+this.totalCost+"</span>.00</div>");
-    this.$.append(layout);
+    //this.$.append(layout);
+    cards.push(new Card("tileLayout","",layout));
     //Contact information
     this.contactInfoDiv = this.contactInfoDiv.clone();
-    this.$.append(this.contactInfoDiv);
+    //this.$.append(this.contactInfoDiv);
+    cards.push(new Card("contactInfo","",this.contactInfoDiv));
     //Recipient information   
     this.recipientInfoDiv = this.recipientInfoDiv.clone();
     this.recipientInfoDiv.find("#deliveryDateField").attr("id","deliveryDate").datepicker();
-    this.$.append(this.recipientInfoDiv);
+    //this.$.append(this.recipientInfoDiv);
+    cards.push(new Card("recipientInfo","",this.recipientInfoDiv));
+    var cardView = new CardView("#cardViewContainer",cards);
+    cardView.draw();
     //Draw whatever controls are necessary
     this.$.append("<div class='controls'><input type='button' value='SUBMIT'></input></div>");
     that = this;
@@ -206,6 +217,8 @@ ShoppingCart.prototype.updatePrice = function (  units, totalCost ) {
 
 ShoppingCart.prototype.saveOrder = function ( ) {
     var address = this.getAddress();
+    console.log(this.getProductManifest());
+    console.log(address);
     $.ajax({
         type: "GET",
         url: "http://getcooki.es/weborder/shoppingCartOrder.php",
@@ -227,7 +240,7 @@ $(document).ready(initialize);
 </head>
 <body>
     <div id="templates" style="display: none;">
-        <div id='contactInfo'>
+        <div id='contactInfo' class='contactInfo'>
             <h1>Contact Info</h1>
             <input type='text' id='firstName' placeholder='First name' class='name'></input>
             <input type='text' id='lastName' placeholder='Last name' class='name'></input>
