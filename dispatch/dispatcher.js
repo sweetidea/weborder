@@ -12,13 +12,15 @@ Dispatcher.prototype.draw = function ( ) {
     inputContainer.append("<input type='text' id='phone' placeholder='Phone #' tabindex='1'></input>");
     inputContainer.append("<input type='text' id='address' placeholder='Address' tabindex='2'></input>");
     inputContainer.append("<input type='text' id='comments' placeholder='Comments' tabindex='3'></input>");
-    inputContainer.append("<input type='text' id='shortlink' placeholder='Short link' tabindex='4'></input>");
+    inputContainer.append("<input type='text' id='offercode' placeholder='Offer code' tabindex='4'></input>");
+    inputContainer.append("<input type='text' id='shortlink' placeholder='Short link' tabindex='5'></input>");
     var customerContainer = $("<div class='customerWidget'></div>");
 
     this.$.append(inputContainer);
     this.$.append(customerContainer);
 
     this.customerWidget = new CustomerWidget(".customerWidget");
+    this.customerWidget.orderListWidget.on("clickOrder",$.proxy(function(evt,address){this.$.find("#address").val(address); console.log(address); this.$.find("#address").blur();},this));
     this.$.append("<div id='map'></div>");
     
     this.$.append("<h1>Select Campus</h1>");
@@ -64,6 +66,8 @@ Dispatcher.prototype.geocodeAddress = function ( address ) {
     that = this;
     geocoder.geocode(geocoderRequest, function(result) {
         var latLng = new google.maps.LatLng(result[0].geometry.location.lat(),result[0].geometry.location.lng());
+        that.lat = result[0].geometry.location.lat();
+        that.lng = result[0].geometry.location.lng();
         that.map.setCenter(latLng);
         that.map.moveMarker(latLng);
         that.shortenLink(latLng.lat(),latLng.lng());
@@ -117,6 +121,8 @@ Dispatcher.prototype.dispatchOrder = function ( ) {
             campus: this.campusGrid.getCampus(),
             address: $("#address").val(),
             phone: $("#phone").val(),
+            lat: this.lat,
+            lng: this.lng,
             shortlink: shorty,
             comments: $("#comments").val()
         },

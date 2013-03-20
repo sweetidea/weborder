@@ -12,6 +12,8 @@ $address = $_REQUEST['address'];
 $shortlink = $_REQUEST['shortlink'];
 $comments = $_REQUEST['comments'];
 $campus = $_REQUEST['campus'];
+$lat = $_REQUEST['lat'];
+$lng = $_REQUEST['lng'];
 
 $phone = ereg_replace("[^0-9]", "", $rawPhoneNumber);
 $numberOfDigits = strlen($phone);
@@ -47,9 +49,9 @@ if($comments) {
 $message .= " ".$shortlink;
 
 //Save the order to the dispatcher table
-$sql = "INSERT INTO dispatcher VALUES ('',?,CURRENT_TIMESTAMP,?,?,?)";
+$sql = "INSERT INTO dispatcher VALUES ('',?,CURRENT_TIMESTAMP,?,?,?,?,?)";
 $statement = $db->prepare($sql);
-$statement->execute(array($phone,$campus,$runnerId,$address));
+$statement->execute(array($phone,$campus,$runnerId,$address,$lat,$lng));
 
 //Text the cookie runner
 $sms = $client->account->sms_messages->create($from,$to,$message);          
