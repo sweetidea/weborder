@@ -1,0 +1,39 @@
+.cardView {
+    height: 50%;
+}
+
+.cardView:hover .controls {
+    display: block;
+}
+
+.card { 
+    width: 100%;
+}
+
+.thumbnail {
+    display: inline-block;
+    margin-right: 10px;
+}
+
+.cardView .controls {
+    display: block;
+    opacity: 0.5;
+    top: 10px;
+    left: 10px;
+    z-index: 1000;
+    font-size: 3em;
+}
+
+.leftclick {
+    display: inline-block;
+    margin-top: 25%;
+    margin-left: 2%;
+    float: left;
+}
+
+.rightclick {
+    display: inline-block;
+    margin-top: 25%;
+    margin-right: 2%;
+    float: right;
+}
