@@ -1,0 +1,23 @@
+.orderListWidget {
+	background: blue;
+	width: 100%;
+	overflow-y: scroll;
+}
+
+.orderListWidget .address {
+	width: 70%;
+	display: inline-block;
+
+}
+
+.orderListWidget .timestamp {
+	width: 25%;
+	display: inline-block;
+	font-size: 0.7em;
+	font-family: verdana;
+}
+
+.orderListWidget .orderRow {
+	border-bottom: 2px solid black;
+}
+
