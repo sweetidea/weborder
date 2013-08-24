@@ -1,0 +1,122 @@
+<html>
+<head>
+    <link href='http://fonts.googleapis.com/css?family=Lilita+One' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.0/themes/base/jquery-ui.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<link rel="stylesheet" href="./cartStyle.css" />
+<style type="text/css">
+#messageShade {
+    display: none;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 255, 0.3);
+}
+
+#messageOverlay {
+    width: 100%;
+    height: 50%;
+    margin: auto;
+    background-color: green;
+}
+</style>
+<script src="./TileGrid.js"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+  <script src="https://checkout.stripe.com/v2/checkout.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.0/jquery-ui.min.js"></script>
+  		<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDbWc_3x-gGY0LnXMBpRukGoVNsJrLMbW0&sensor=true"></script>
+  		<script type="text/javascript">
+
+
+TileGrid.prototype.drawControls = function ( ) {
+    var that = this;
+    //Draw controls
+    var buildRunnerDropdown = function ( runnerList  ) {
+        var dropdown = $("<select id='runnerList' style='width: 100%;'></select>");
+        for(var i = 0; i < runnerList.length; i++ ) {
+            var option = $("<option value='"+runnerList[i].id+"'>"+runnerList[i].shortName+"</option>");
+            dropdown.append(option);
+        }
+        that.$.find(".tileLayout").after(dropdown);
+    }
+
+    $.ajax({
+        type: "GET",
+        url: "http://getcooki.es/weborder/runnerList.php",
+        success: function ( response ) { buildRunnerDropdown(response); },
+        error: function ( ) { alert("Order not placed") }
+    });
+    this.$.append("<div class='controls'><input type='button' id='cash' value='CASH'></input></div>");
+    this.$.append("<div class='controls'><input type='button' id='credit' value='CREDIT'></input></div>");
+
+    //Add control listeners
+    $("#messageOverlay input[type=button]").on("click",function(){$("#messageShade").hide();});
+    this.$.find(".controls #cash").on('click',function(){that.saveOrder(1);});
+    this.$.find(".controls #credit").on('click',function(){that.saveOrder(2);});
+}
+
+TileGrid.prototype.saveOrder = function ( paymentType ) {
+    var that = this;
+    var _saveOrder = function ( position ) {
+        console.log({ 
+                productManifest: that.getProductManifest(),
+                runnerId: $("#runnerList").val(),
+                lat: position.coords.latitude,
+                lng: position.coords.longitude,
+                paymentType: paymentType,
+                saleType: 1
+            });
+        $.ajax({
+            type: "GET",
+            url: "http://getcooki.es/weborder/CookieRecorder.php",
+            data: { 
+                productManifest: that.getProductManifest(),
+                runnerId: $("#runnerList").val(),
+                lat: position.coords.latitude,
+                lng: position.coords.longitude,
+                paymentType: paymentType,
+                saleType: 1
+            },
+            success: function ( response ) { window.scrollTo(0,0); $("#messageShade").show(); $("#messageOverlay #response").text(response); that.clearValues(); },
+            error: function ( ) { $("#messageShade").show(); $("#messageOverlay #response").text("ORDER NOT RECORDED");  }
+        });
+    }
+
+    if (navigator.geolocation) 
+    {
+        navigator.geolocation.getCurrentPosition( _saveOrder );
+    } else {
+        _saveOrder();
+    }
+}
+
+
+function initialize ( ) {
+    var tiles = [];
+    tiles.push(new Tile("snickerdoodle","Snickerdoodle",""));
+    tiles.push(new Tile("choc_chip","Chocolate Chip",""));
+    tiles.push(new Tile("tazadoodle","Tazadoodle",""));
+    tiles.push(new Tile("double_choc","Double Chocolate (V)",""));
+    tiles.push(new Tile("snick_sando","Snickerdoodle Ganache",""));
+    tiles.push(new Tile("choc_sando","Dbl Choc Coco Sando",""));
+    //tiles.push(new Tile("white_choc","White Chocolate Oatmeal",""));
+    //tiles.push(new Tile("pumpkin","Pumpkin",""));
+    grid = new TileGrid("#grid","Cookie Recorder",tiles);
+    grid.draw();
+    $(".tileLayout h1").append("<div style='font-size: .7em; margin-top: 5px;'>(packs sold)</div>");
+    
+
+    
+
+}
+
+$(document).ready(initialize);
+  		</script>
+</head>
+<body>
+<div id="messageShade"><div id="messageOverlay"><span id="response"></span><input type="button" value="SOUNDS GOOD"></input></div></div>
+<div id="grid" class="cart"></div>
+<div id="result"></div> 
+</body>
+
+</html>

@@ -13,7 +13,10 @@ var Texter = function ( selector, phoneNumber ) {
 }
 
 Texter.prototype.draw = function () {
-	this.$.append("<h1>"+this.firstName+" "+this.lastName+"</h1>");
+	if(this.firstName || this.lastName)
+		this.$.append("<h1>"+this.firstName+" "+this.lastName+"</h1>");
+	else
+		this.$.append("<h1>"+this.phoneNumber+"</h1>");
 	this.console = $("<div class='console'>Hello</div>");
 	this.$.append(this.console);
 	this.console.hide();
@@ -57,7 +60,7 @@ Texter.prototype.updateTextHistory = function ( texts ) {
 		this.lastActivity = new Date(text.timestamp);
 		this.newMessageAlert(texts[0]);
 	}	
-
+	return this.lastActivity;
 }
 
 Texter.prototype.newMessageAlert = function ( text ) {
@@ -97,7 +100,17 @@ Texter.prototype.drawTextMessage = function ( data ) {
 		textMessage.addClass("from"); //the naming here is super confusing and needs to be fixed
 	}
 	textMessage.append("<div class='message'>"+data.message+"</div><div class='number'>"+data.from+"</div><div class='timestamp'>"+timeString+"</div>");
+
+	//Implementation for AddressSelector
+	var messageText = textMessage.find(".message");
+	var that = this;
+	messageText.on('click',function(){if(!messageText.hasClass('addressSelector')){ messageText.addClass('addressSelector'); that.toggleAddressSelector(messageText); } else { messageText.removeClass('addressSelector');}});
 	return textMessage;
+}
+
+Texter.prototype.toggleAddressSelector = function ( message ) {
+	var addressSelector = new TextMessageTouchSelector(message);
+	addressSelector.draw();
 }
 
 Texter.prototype.getTexts = function ( ) {
@@ -132,7 +145,7 @@ Texter.prototype.loadTexts = function ( ) {
 			that.lastActivity = new Date(0);
 		var height = messageContainer.height();
 		historyBox.scrollTop(height);
-		that.getTextInterval = window.setInterval(function(){that.getTexts();},1000);
+		//that.getTextInterval = window.setInterval(function(){that.getTexts();},1000);
 	}
 	$.ajax({
         type: "GET",
