@@ -1,3 +1,11 @@
+Object.size = function(obj) {
+    var size = 0, key;
+    for (key in obj) {
+        if (obj.hasOwnProperty(key)) size++;
+    }
+    return size;
+}
+
 var Card = function ( id, klass, contentEl ) {
     this.id = id;
     this.klass = klass || "";
@@ -87,7 +95,7 @@ CardView.prototype.draw = function ( ) {
     	layout.append(thumbnail);
     }*/
 
-    this.$.append(controls);
+    //this.$.append(controls);
 
     //Add control listeners
     that = this;

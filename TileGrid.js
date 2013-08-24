@@ -34,6 +34,10 @@ Tile.prototype.getQty = function ( ) {
     return parseInt(this.$.find("input[type='text']").val(),10);
 }
 
+Tile.prototype.resetQty = function ( ) {
+    this.$.find("input[type='text']").val("");
+}
+
 //var MailOrderCart
 
 //var ByTheBoxCart()
@@ -69,6 +73,11 @@ TileGrid.prototype.draw = function ( ) {
     }    
     this.$.append(layout);
     
+    this.drawControls();
+}
+
+
+TileGrid.prototype.drawControls = function ( ) {
     //Draw controls
     this.$.append("<div class='controls'><input type='button' value='SUBMIT'></input></div>");
 
@@ -88,6 +97,11 @@ TileGrid.prototype.getProductManifest = function ( ) {
     return manifest;
 }
 
+TileGrid.prototype.clearValues = function ( ) {
+    for(var tile in this.tiles) {
+        this.tiles[tile].resetQty();
+    } 
+}
 
 TileGrid.prototype.saveOrder = function ( ) {
     $.ajax({

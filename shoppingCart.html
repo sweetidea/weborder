@@ -117,14 +117,17 @@ ShoppingCart.prototype.draw = function ( ) {
     }    
     //Draw the box showing the total amount
     layout.append("<div class='total'>TOTAL: $"+this.unitPrice+".00 x <span id='qty'>0</span> = $<span id='totalCost'>"+this.totalCost+"</span>.00</div>");
+    layout.append("<div class='controls'><input type='button' value='PREV'></input><input type='button' value='NEXT'></input></div>")
     //this.$.append(layout);
     cards.push(new Card("tileLayout","",layout));
     //Contact information
     this.contactInfoDiv = this.contactInfoDiv.clone();
+    this.contactInfoDiv.append("<div class='controls'><input type='button' value='PREV'></input><input type='button' value='NEXT'></input></div>")
     //this.$.append(this.contactInfoDiv);
     cards.push(new Card("contactInfo","",this.contactInfoDiv));
     //Recipient information   
     this.recipientInfoDiv = this.recipientInfoDiv.clone();
+    this.recipientInfoDiv.append("<div class='controls'><input type='button' value='PREV'></input><input type='button' value='NEXT'></input></div>")
     this.recipientInfoDiv.find("#deliveryDateField").attr("id","deliveryDate").datepicker();
     //this.$.append(this.recipientInfoDiv);
     cards.push(new Card("recipientInfo","",this.recipientInfoDiv));
@@ -246,6 +249,7 @@ $(document).ready(initialize);
             <input type='text' id='lastName' placeholder='Last name' class='name'></input>
             <input type='text' id='phone' placeholder='Phone #'></name>
             <input type='text' id='email' placeholder='E-mail'></name>
+
         </div>
 
         <div id='boxRecipientInfo' class='recipientInfo'>
@@ -260,6 +264,20 @@ $(document).ready(initialize);
 
         <div id='mailRecipientInfo' class='recipientInfo'>
             <h1>Mailing Address</h1>
+            <input type='text' id='firstName' placeholder='First name' class='name'></input>
+            <input type='text' id='lastName' placeholder='Last name' class='name'></input>
+            <input type='text' id='address1' placeholder='Address 1'></input>
+            <input type='text' id='address2' placeholder='Address 2'></input>
+            <input type='text' id='city' placeholder='City'></input>
+            <input type='text' id='state' placeholder='State'></input>
+            <input type='text' id='zipcode' placeholder='Zipcode'></input>
+        </div>
+
+        <div id='billingInfo' class='recipientInfo'>
+            <h1>Credit Card Info</h1>
+            <div id='stripeContainer'></div>
+            <h1>Billing Information</h1>
+            <input type='checkbox' id='sameAsShipping'>Billing info is the same</input>
             <input type='text' id='firstName' placeholder='First name' class='name'></input>
             <input type='text' id='lastName' placeholder='Last name' class='name'></input>
             <input type='text' id='address1' placeholder='Address 1'></input>

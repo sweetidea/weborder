@@ -42,14 +42,14 @@ $order->message = "Thank you! Your order has been placed! You'll be receiving a 
 
 
 //taken from http://www.vijayjoshi.org/2011/01/12/php-shorten-urls-using-google-url-shortener-api/
-$link = "https://maps.google.com/?ll=".$_REQUEST['latitude'].",".$_REQUEST['longitude'];
+//$link = "https://maps.google.com/?ll=".$_REQUEST['latitude'].",".$_REQUEST['longitude'];
 /*$request->longUrl = $link;
 $curl = curl_init();
 $result = curl_exec($curl);
 $result = json_decode($result);
 curl_close($curl);
 */
-$postData = array('longUrl' => $link);
+/*$postData = array('longUrl' => $link);
 $jsonData = json_encode($postData);
 
 $curlObj = curl_init();
@@ -69,8 +69,9 @@ $json = json_decode($response);
 
 curl_close($curlObj);
 
-$link = $json->id;
-$textBody = "Phone: ".$_REQUEST['phone']." Address: ".$_REQUEST['address']." MapLink: ".$link;
+$link = $json->id;*/
+$link = "";
+$textBody = "Phone: ".$_REQUEST['phone']." Address: ".$_REQUEST['address'];
 if(strlen($textBody)>160) {
 	$textBody = "Phone: ".$_REQUEST['phone']." Address too big. Ask customer for address.";
 }
