@@ -1,0 +1,18 @@
+.cardView {
+
+}
+
+
+.card { 
+    width: 100%;
+}
+
+.thumbnail {
+    display: inline-block;
+    margin-right: 10px;
+}
+
+.cardView .controls {
+
+}
+

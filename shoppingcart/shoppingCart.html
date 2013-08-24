@@ -1,0 +1,405 @@
+<html>
+<head>
+    <link href='http://fonts.googleapis.com/css?family=Lilita+One' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.0/themes/base/jquery-ui.css" />
+<link rel="stylesheet" href="./cartStyle.css" />
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+  <script src="https://checkout.stripe.com/v2/checkout.js"></script>
+  <link rel="stylesheet" href="./cardStyle.css" />
+<script src="./CardView.js"></script>
+<script src="../Map.js"></script>
+<style type="text/css">
+body {
+    margin: 0;
+}
+</style>
+  <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.0/jquery-ui.min.js"></script>
+  		<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDbWc_3x-gGY0LnXMBpRukGoVNsJrLMbW0&sensor=true"></script>
+  		<script type="text/javascript">
+
+
+
+
+
+function initialize ( ) {
+    cart = new ShoppingCart("#cart",36,30,2);
+    cart.draw();
+    //mailCart = new ByMailCart("#mailCart",12);
+    //mailCart.draw();
+}
+
+var Tile = function ( id, name, description, image ) {
+    this.id = id;
+    this.name = name;
+    this.description = description;
+    this.image = image;
+    this.$ = '';
+}
+
+Tile.prototype.clicker = function ( ) {
+    if(this.$){
+        var inputEl = this.$.find("input")[0];
+        var val = parseInt(inputEl.value);
+        if(isNaN(val))
+            val = 0;
+        val += 1;
+        inputEl.value = val;
+    }
+}
+
+Tile.prototype.draw = function ( ) {
+    tile = $("<div id='"+this.id+"' class='tile'></div>");
+    this.$ = tile;
+    var content = $("<div class='content'></div>");
+    content.append("<div class='title'>"+this.name+"</div>");
+    content.append("<div class='description'>"+this.description+"</div>");
+    content.on('click',$.proxy(function(){this.clicker();},this));
+    this.$.append(content);
+    this.$.append("<input type='text' value='0'></input>");
+    return tile;
+}
+
+Tile.prototype.getQty = function ( ) { 
+    return parseInt(this.$.find("input[type='text']").val(),10);
+}
+
+//var MailOrderCart
+
+//var ByTheBoxCart()
+
+function ShoppingCart ( selector, packageQty, unitPrice, type ) { 
+    this.$ = $(selector);
+    this.cols = 2;
+    this.tiles = [];
+    this.unitPrice = unitPrice;
+    this.packageQty = packageQty;
+    this.orderType = type; //1 is mail, 2 is box
+    this.totalCost = 0;
+    this.views = [];
+    if(this.orderType==1) {
+        this.recipientInfoDiv = $("#templates #mailRecipientInfo");
+        this.headerText = "By the Mail";
+    }
+    else if(this.orderType==2) {
+        this.headerText = "By the Box";
+        this.recipientInfoDiv = $("#templates #boxRecipientInfo");
+    }
+
+    //should have splashj card that can go over everything
+    //
+    //This can eventually become the infobox on the main page. Displaying diff cards on a timer or with a menu.
+    //we want to draw cards. Each card has it's own ID and they would be added to the cart workflow
+
+
+    this.contactInfoDiv = $("#templates #contactInfo");
+    
+    //init tiles
+    this.tiles.push(new Tile("snickerdoodle","Snickerdoodle",""));
+    this.tiles.push(new Tile("choc_chip","Chocolate Chip",""));
+    this.tiles.push(new Tile("tazadoodle","Tazadoodle",""));
+    this.tiles.push(new Tile("double_choc","Double Chocolate (V)",""));
+}
+
+ShoppingCart.prototype.draw = function ( ) {
+    var cards = [];
+    this.$.html("");
+    var cardViewContainer = $('<div id="cardViewContainer"></div>');
+    this.$.append(cardViewContainer);
+    var layout = $("<div class='tileLayout'></div>");
+    layout.append("<h1>"+this.headerText+"</h1>");
+
+
+    var clickFunc = function ( ) {
+        this.getPrice();
+        if(this.packageQty-this.getQty()<=0)
+            this.updateButton(2);
+        else
+            this.updateButton(1);
+    };
+    clickFunc = $.proxy(clickFunc,this);
+    /**Draw the tile matrix*/
+    for ( var i = 0; i < Math.ceil(this.tiles.length/2); i++ ) {
+        var row = $("<div class='tileRow'></div>");
+        for ( var j = 0; j < this.cols; j++ ) {
+            tile = this.tiles[(i*this.cols)+j];
+            if(tile) {
+                var tileDiv = tile.draw();
+                tileDiv.on('click',clickFunc);
+                tileDiv.find('input').on('change',clickFunc);
+                row.append(tileDiv);
+            }
+        }
+        layout.append(row);
+    }    
+    //Draw the box showing the total amount
+    layout.append("<div class='total'>TOTAL: $"+this.unitPrice+".00 x <span id='qty'>0</span> = $<span id='totalCost'>"+this.totalCost+"</span>.00</div>");
+    
+    //this.$.append(layout);
+    cards.push(new Card("tileLayout","",layout));
+    //Contact information
+    this.contactInfoDiv = this.contactInfoDiv.clone();
+    //this.$.append(this.contactInfoDiv);
+    //cards.push(new Card("contactInfo","",this.contactInfoDiv));
+    //Recipient information   
+    this.recipientInfoDiv = this.recipientInfoDiv.clone();
+    this.recipientInfoDiv.find("#deliveryDateField").attr("id","deliveryDate").datepicker();
+    //this.$.append(this.recipientInfoDiv);
+    cards.push(new Card("recipientInfo","",this.recipientInfoDiv));
+
+    this.orderSummary = $("<div id='orderSummary' class='recipientInfo'></div>");
+    this.drawOrderSummary();
+    cards.push(new Card("orderSummary","",this.orderSummary));
+
+    var cardView = new CardView("#cardViewContainer",cards);
+    this.cardView = cardView;
+    cardView.draw();
+    //Draw whatever controls are necessary
+    /*this.$.append("<div class='controls'><input type='button' value='SUBMIT'></input></div>");
+    that = this;
+    var x = this.$.find(".controls input[type='button']");
+    this.$.find(".controls input[type='button']").on('click',function(){var price = that.getPrice(); that.openCheckout(price); that.saveOrder();});*/
+    this.controls = $("<div class='controls'></div>");
+    var controlButton = $("<input id='controlButton' type='button' value='"+this.packageQty+" COOKIES REMAINING'></input>");
+    var that = this;
+    //controlButton.on('click',function(){cardView.nextCard(); that.drawOrderSummary();});
+    this.controls.append(controlButton);
+    this.$.append(this.controls);
+}
+
+ShoppingCart.prototype.updateButton = function ( controlId ) {
+    var text;
+    var func;
+    this.drawOrderSummary();
+    var button = this.controls.find("#controlButton");
+    button.off('click');
+    switch(controlId) {
+        case 1: text = this.packageQty-this.getQty()+" COOKIES REMAINING"; 
+                break;
+        case 2: text = "CHECKOUT";
+                func = function ( ) { 
+                    this.cardView.nextCard();
+                    this.updateButton(3);
+                };
+                func = $.proxy(func,this); 
+                break;
+        case 3: text = "NEXT"; 
+                func = function ( ) { 
+                    this.cardView.nextCard();
+                    this.updateButton(4);
+                };
+                func = $.proxy(func,this); 
+                break;
+        case 4: text = "CONFIRM AND PAY";
+                func = function ( ) { 
+                    this.openCheckout(this.getPrice());
+                };
+                func = $.proxy(func,this); 
+                break;
+    }
+    button.prop("value",text);
+    if(func) {
+        button.on("click",func);
+    }
+}
+
+ShoppingCart.prototype.openCheckout = function ( price ) {
+    var that = this;
+	var token = function(res){ //this callback is called when the info is submitted
+        //console.log('Got token ID:', res.id);
+        that.saveOrder(res.id);
+      };
+
+      StripeCheckout.open({
+        key:         'pk_test_NmT42ZSmAWR3pb9VVzA55hTh',
+        address:     false,
+        amount:      100,//price*100,
+        name:        'Sweet Idea',					//should be this.checkoutName
+        description: 'Boxes of cookies, delivered.', //should be this.checkoutDescription
+        panelLabel:  'Checkout',					//should be this.checkoutLabel
+        token:       token
+      });
+}
+
+ShoppingCart.prototype.getProductManifest = function ( ) {
+    var manifest = {};
+    for(var tile in this.tiles) {
+        var qty = this.tiles[tile].getQty();
+        if(qty>0)
+            manifest[this.tiles[tile].id] = qty;
+    } 
+    return manifest;
+}
+
+ShoppingCart.prototype.verifyAddress = function ( el ) {
+    var val = el.val();
+    var verified = false;
+    switch(el.id) {
+        case 'address1': break;
+        case 'address2': break;
+        case 'city': break;
+        case 'firstName': break;
+        case 'lastName': break;
+        case 'state': break;
+        case 'zipcode': break;
+        case 'phone': break;
+    }
+    return verified;
+}
+
+ShoppingCart.prototype.drawOrderSummary = function ( ) {
+    var that = this;
+    var orderSummary = this.orderSummary;
+    orderSummary.html("");
+    orderSummary.append("<h1 style='display: inline-block;'>Shopping Cart</h1>");
+    var button = $("<input class='editButton' type='button' value='EDIT'>");
+    button.on('click',function(){alert('hh');});
+    orderSummary.append(button);
+    $.each(this.getProductManifest(),function(id,val){
+        orderSummary.append("<div>"+that.idTranslator(id)+" "+val+"</div>");
+    });
+    orderSummary.append("<h1 style='display: inline-block;'>Shipping Info</h1>");
+    orderSummary.append("<input class='editButton' type='button' value='EDIT'>");
+    $.each(this.getAddress(),function(id,val){
+        orderSummary.append("<div>"+that.idTranslator(id)+" "+val+"</div>");
+    });
+}
+
+ShoppingCart.prototype.idTranslator = function ( id ) {
+    var output = '';
+    switch(id) {
+        case 'phone': output = "Phone"; break;
+        case 'email': output = "E-mail"; break;
+        case 'deliveryDateField': output = "Delivery Date"; break;
+        case 'firstName': output = "First Name"; break;
+        case 'lastName': output = "Last Name"; break;
+        case 'address1': output = "Address 1"; break;
+        case 'address2': output = "Address 2"; break;
+        case 'city': output = "City"; break;
+        case 'state': output = "State"; break;
+        case 'zipcode': output= "Zipcode"; break;
+        case 'choc_chip': output = "Chocolate chip"; break;
+        case 'double_choc': output = "Double chocolate"; break;
+        case 'snickerdoodle': output = "Snickerdoodle"; break;
+        case 'tazadoodle': output = "Tazadoodle"; break;
+    }
+    return output;
+}
+
+
+ShoppingCart.prototype.getAddress = function ( ) {
+    var address = {};
+    var formElements = this.recipientInfoDiv.find("input[type=text]");
+
+    formElements.each(function(i,el) {
+        if(el.value)
+            address[el.id] = el.value;
+    });
+
+    return address;
+}
+
+ShoppingCart.prototype.getPrice = function ( ) {
+	var totalQty = this.getQty();
+	var units = 0;
+
+    var t = this.$.find("#qty");
+    if(!isNaN(totalQty))
+    	units = Math.ceil(totalQty/this.packageQty);
+    if(!isNaN(units))
+    	this.$.find("#qty").text(units);
+
+    var amount = units*this.unitPrice;
+    this.totalCost = amount;
+    this.units = units;
+    this.updatePrice(units,amount);
+    return amount;
+} 
+
+ShoppingCart.prototype.getQty = function ( ) {
+    var totalQty = 0;
+    for(var tile in this.tiles) {
+        var qty = this.tiles[tile].getQty();
+        totalQty += qty;
+    }
+    return totalQty;
+}
+
+ShoppingCart.prototype.updatePrice = function (  units, totalCost ) {
+    this.$.find("#qty").text(units);
+    this.$.find("#totalCost").text(totalCost);
+}
+
+ShoppingCart.prototype.saveOrder = function ( token ) {
+    var address = this.getAddress();
+    console.log(this.getProductManifest());
+    console.log(address);
+    console.log(token);
+    $.ajax({
+        type: "GET",
+        url: "http://getcooki.es/weborder/shoppingcart/shoppingCartOrder.php", 
+        data: { 
+            recipientInfo: address,
+            productManifest: this.getProductManifest(),
+            type: this.orderType,
+            price: this.totalCost*100,
+            units: this.units,
+            token: token
+        },
+        success: function ( response ) { console.log(response); },
+        error: function ( ) { console.log("ERROR"); console.log(response); }
+    });
+}
+
+$(document).ready(initialize);
+  		</script>
+</head>
+<body>
+    <div id="templates" style="display: none;">
+        <div id='contactInfo' class='contactInfo'>
+            <div id='map'></div>
+            <h1>Contact Info</h1>
+            <input type='text' id='firstName' placeholder='First name' class='name'></input>
+            <input type='text' id='lastName' placeholder='Last name' class='name'></input>
+            <input type='text' id='phone' placeholder='Phone #'></name>
+            <input type='text' id='email' placeholder='E-mail'></name>
+
+        </div>
+
+        <div id='boxRecipientInfo' class='recipientInfo'>
+            <h1>Contact Info</h1>
+            <input type='text' id='name' placeholder='Name'></input>
+            <input type='text' id='phone' placeholder='Phone'></input>
+            <input type='text' id='email' placeholder='E-mail'></input>
+            <h1>Delivery Info</h1>
+            <input type='text' id='deliveryDateField' placeholder='Delivery date' style='width: 40%;'></input>
+            <select id='hours'><option value='1'>1</option><option value='2'>2</option><option value='3'>3</option><option value='4'>4</option>
+                <option value='5'>5</option><option value='6'>6</option><option value='7'>7</option><option value='8'>8</option>
+                <option value='9'>9</option><option value='10'>10</option><option value='11'>11</option><option value='12'>12</option></select>:<select id='minutes'><option value="0">00</option><option value="30">30</option></select>
+            <select><option value='am'>am</option><option value='pm'>pm</option></select>
+            <input type='text' id='address1' placeholder='Address 1'></input>
+            <input type='text' id='address2' placeholder='Address 2'></input>
+            <input type='text' id='city' placeholder='City'></input>
+            <input type='text' id='state' placeholder='State'></input>
+            <input type='text' id='zipcode' placeholder='Zipcode'></input>
+
+        </div>
+
+        <div id='mailRecipientInfo' class='recipientInfo'>
+            <h1>Mailing Address</h1>
+            <input type='text' id='firstName' placeholder='First name' class='name'></input>
+            <input type='text' id='lastName' placeholder='Last name' class='name'></input>
+            <input type='text' id='address1' placeholder='Address 1'></input>
+            <input type='text' id='address2' placeholder='Address 2'></input>
+            <input type='text' id='city' placeholder='City'></input>
+            <input type='text' id='state' placeholder='State'></input>
+            <input type='text' id='zipcode' placeholder='Zipcode'></input>
+        </div>
+
+        <div id='orderSummary' class='recipientInfo'>
+
+        </div>
+    </div>
+<div id="cart" class="cart"></div>
+</body>
+
+</html>

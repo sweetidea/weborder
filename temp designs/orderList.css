@@ -1,0 +1,82 @@
+/* cssreset.com */
+* {
+	margin: 0;
+	padding: 0;
+}
+
+#view {
+
+}
+
+#list {
+	width: 100%;
+}
+
+#controls {
+	width: 100%;
+}
+
+.orderViewRow {
+
+}
+
+.orderViewRow > div {
+	width: 49%;
+	overflow: hidden;
+	display: inline-block;
+}
+
+.orderView {
+	width: 100%;
+	background-color: white;
+	padding: 0px;
+	border: none;
+}
+
+.toggleDiv {
+	padding-right: 7%;
+	padding-left: 7%;
+	display: inline-block;
+	border-right: 1px solid black;
+}
+
+.toggleDiv:last-child {
+	border: none;
+	}
+
+.closedPanel {
+	display: none;
+}
+
+.orderViewRow.texter {
+}
+
+.orderViewRow.map {
+}
+
+.orderViewRow.details {
+}
+
+
+.open {
+	background-color: red;
+}
+
+.dispatched {
+	background-color: green;
+}
+
+.delivered {
+	background-color: gray;
+}
+
+.status.open {
+}
+
+.status.dispatched {
+
+}
+
+.status.delivered {
+
+}
