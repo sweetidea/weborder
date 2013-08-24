@@ -4,6 +4,8 @@
 yourls/
 header.php
 include/
+firephp/
+stripe/
 website_fixes.txt
 error_log
 *.gif
